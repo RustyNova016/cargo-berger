@@ -1,0 +1,4 @@
+[[crates]]
+name="cargo-berger"
+remote="origin"
+path="./"

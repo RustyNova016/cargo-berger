@@ -1,0 +1,21 @@
+[package]
+name = "cargo-berger"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Clap
+clap = { version = "4.5.41", features = [
+    "unicode",
+    "wrap_help",
+    "derive",
+    "color",
+] }
+clap_complete = "4.5.55"
+clap-markdown = "0.1.5"
+
+# Others
+toml = "0.9.5"
+git2 = "0.20.2"
+serde = "1.0.219"
+color-eyre = "0.6.5"
