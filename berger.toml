@@ -3,7 +3,7 @@ name="cargo-berger"
 path="./"
 default_branch="master"
 
-[[crates]]
-name="shaun"
-path="../shaun/"
-default_branch="master"
+# [[crates]]
+# name="shaun"
+# path="../shaun/"
+# default_branch="master"

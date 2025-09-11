@@ -2,6 +2,7 @@ use std::io;
 use std::io::Write as _;
 use std::process::Command;
 
+use color_eyre::eyre::Context;
 use color_eyre::eyre::eyre;
 use git2::Status;
 
@@ -9,6 +10,7 @@ use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::git_repo::GitRepo;
 use crate::utils::cmd::unwrap_status;
+use crate::utils::cmd::unwrap_status_out;
 
 impl GitRepo {
     pub fn get_base_command(&self) -> Command {
@@ -128,6 +130,32 @@ impl GitRepo {
                 .arg("reset")
                 .arg("HEAD~")
                 .arg("--")
+                .output()?,
+        )
+    }
+
+    pub fn nb_commits_on_branch(&self, base: &str) -> ColEyreVal<String> {
+        unwrap_status_out(
+            self.get_base_command()
+                .arg("rev-list")
+                .arg("--count")
+                .arg("HEAD")
+                .arg(format!("^{base}"))
+                .output()?,
+        )
+        .context("While getting the number of commits on the branch")
+    }
+
+    pub fn is_branch_empty(&self, base: &str) -> ColEyreVal<bool> {
+        Ok(self.nb_commits_on_branch(base)? == "0")
+    }
+
+    pub fn get_current_branch(&self) -> ColEyreVal<String> {
+        unwrap_status_out(
+            self.get_base_command()
+                .arg("rev-parse")
+                .arg("--abbrev-ref")
+                .arg("HEAD")
                 .output()?,
         )
     }

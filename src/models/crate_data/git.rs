@@ -1,3 +1,7 @@
+use std::process::Command;
+
+use color_eyre::eyre::Ok;
+
 use crate::ColEyre;
 use crate::models::crate_data::CrateData;
 use crate::models::git_repo::commit::CommitResult;
@@ -46,5 +50,24 @@ impl CrateData {
     pub fn switch_to_default(&self) -> ColEyre {
         self.repository.switch_branch(&self.conf.default_branch)?;
         self.repository.pull_branch()
+    }
+
+    pub fn make_pr(&self) -> ColEyre {
+        if self.repository.is_branch_empty(&self.conf.default_branch)? {
+            println!(
+                "[ Skipping PR for crate `{}` (No changes) ]",
+                self.conf.name
+            );
+
+            return Ok(());
+        }
+
+        Command::new("gh")
+            .arg("pr")
+            .arg("create")
+            .current_dir(&self.conf.path)
+            .status()?;
+
+        Ok(())
     }
 }
