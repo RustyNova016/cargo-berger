@@ -2,3 +2,4 @@
 name="cargo-berger"
 remote="origin"
 path="./"
+default_branch="master"

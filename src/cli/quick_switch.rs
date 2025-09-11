@@ -4,10 +4,13 @@ use crate::ColEyre;
 use crate::models::config::WorkplaceConfig;
 use crate::models::crate_data::CrateData;
 
-/// Makes a new temporary commit, which will be removed on next commit. Useful if you need to quickly save your work and switch to another branch
+/// Save the changes and move to another branch.
 #[derive(Parser, Debug, Clone)]
 pub struct QuickSwitchCommand {
+    /// The name of the branch
     branch: String,
+
+    /// The message for the save commit
     message: Option<String>,
 }
 
@@ -23,9 +26,7 @@ impl QuickSwitchCommand {
                 .or(Some(&format!("Quick switch to branch `{}`", &self.branch))),
         )?;
 
-        crate_data
-            .repository
-            .switch_branch_or_create(&self.branch)?;
+        crate_data.repository.switch_branch(&self.branch)?;
 
         Ok(())
     }
