@@ -1,3 +1,5 @@
 # Summary
 
-- [Chapter 1](./chapter_1.md)
+- [Hello Berger!](./main_page.md)
+- [Commiting](./committing_guide.md)
+- [Jumping branches](./jumping_branches.md)
