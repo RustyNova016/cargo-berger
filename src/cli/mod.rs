@@ -1,6 +1,7 @@
 pub mod checkpoint;
 pub mod full;
 pub mod new_feat;
+pub mod pr;
 pub mod quick_switch;
 pub mod save;
 use clap::Parser;
@@ -10,6 +11,7 @@ use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::new_feat::NewFeatCommand;
+use crate::cli::pr::PRCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
 use crate::cli::save::SaveCommand;
 use crate::models::cli_data::CLI_DATA;
@@ -72,6 +74,7 @@ pub enum Commands {
     Checkpoint(CheckpointCommand),
     Full(FullCommand),
     NewFeat(NewFeatCommand),
+    Pr(PRCommand),
     QuickSwitch(QuickSwitchCommand),
     Save(SaveCommand),
 }
@@ -82,6 +85,7 @@ impl Commands {
             Self::Checkpoint(val) => val.run()?,
             Self::Full(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,
+            Self::Pr(val) => val.run()?,
             Self::QuickSwitch(val) => val.run()?,
             Self::Save(val) => val.run()?,
         }
