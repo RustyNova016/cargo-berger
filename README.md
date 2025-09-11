@@ -1,4 +1,4 @@
 # cargo-berger
 
-A cli app that helps with git project management. Very opiniated
+A cli app that helps with git project management. Very opiniatedcf
 

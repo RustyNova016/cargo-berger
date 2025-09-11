@@ -1,27 +1,26 @@
 use crate::ColEyre;
 use crate::models::crate_data::CrateData;
+use crate::models::git_repo::commit::CommitResult;
 
 impl CrateData {
     pub fn make_tmp_save_commit(&self, message: Option<&str>) -> ColEyre {
-        if !self.repository.is_dirty()? {
-            println!("[ Crate `{}` is clean. Skipping commit]", self.conf.name);
-            return Ok(());
-        }
+        if let CommitResult::CleanTree = self.repository.make_tmp_save_commit(message)? {
+            println!("[ Crate `{}` is clean. Skipping commit]", self.conf.name)
+        };
 
-        self.repository.make_tmp_save_commit(message)
+        Ok(())
     }
 
     pub fn make_checkpoint_commit(&self, message: Option<&str>) -> ColEyre {
-        if !self.repository.is_dirty()? {
-            println!("[ Crate `{}` is clean. Skipping commit]", self.conf.name);
-            return Ok(());
-        }
+        if let CommitResult::CleanTree = self.repository.make_checkpoint_commit(message)? {
+            println!("[ Crate `{}` is clean. Skipping commit]", self.conf.name)
+        };
 
-        self.repository.make_checkpoint_commit(message)
+        Ok(())
     }
 
     pub fn make_full_commit(&self, message: &str) -> ColEyre {
-        if !self.repository.is_dirty()? {
+        if (!self.repository.is_dirty()?) && !self.repository.is_latest_commit_save()? {
             println!("[ Crate `{}` is clean. Skipping commit]", self.conf.name);
             return Ok(());
         }
@@ -38,6 +37,7 @@ impl CrateData {
         self.clippy_hack()?;
 
         println!("\n === Creating commit ===\n");
-        self.repository.make_full_commit(message)
+        self.repository.make_full_commit(message)?;
+        Ok(())
     }
 }

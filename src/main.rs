@@ -1,3 +1,4 @@
+pub mod utils;
 use clap::Parser as _;
 
 use crate::cli::Cli;
@@ -10,7 +11,6 @@ pub(crate) type ColEyre = color_eyre::Result<()>;
 
 fn main() -> ColEyre {
     color_eyre::install()?;
-    println!("Hello, world!");
 
     let cli = Cli::parse();
     cli.run()?;

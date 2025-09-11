@@ -1,11 +1,13 @@
 pub mod checkpoint;
 pub mod full;
+pub mod quick_switch;
 pub mod save;
 use clap::Parser;
 use clap::Subcommand;
 
 use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::full::FullCommand;
+use crate::cli::quick_switch::QuickSwitchCommand;
 use crate::cli::save::SaveCommand;
 
 /// Tools for TagStudio
@@ -51,6 +53,7 @@ impl Cli {
 pub enum Commands {
     Checkpoint(CheckpointCommand),
     Full(FullCommand),
+    QuickSwitch(QuickSwitchCommand),
     Save(SaveCommand),
 }
 
@@ -59,6 +62,7 @@ impl Commands {
         match self {
             Self::Checkpoint(val) => val.run()?,
             Self::Full(val) => val.run()?,
+            Self::QuickSwitch(val) => val.run()?,
             Self::Save(val) => val.run()?,
         }
 
