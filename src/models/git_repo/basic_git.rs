@@ -123,6 +123,12 @@ impl GitRepo {
     }
 
     pub fn reset_last_commit(&self) -> ColEyre {
-        unwrap_status(self.get_base_command().arg("reset").arg("HEAD~").output()?)
+        unwrap_status(
+            self.get_base_command()
+                .arg("reset")
+                .arg("HEAD~")
+                .arg("--")
+                .output()?,
+        )
     }
 }
