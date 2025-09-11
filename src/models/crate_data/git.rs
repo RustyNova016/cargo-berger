@@ -25,6 +25,8 @@ impl CrateData {
             return Ok(());
         }
 
+        self.make_tmp_save_commit(Some(&format!("Before full commit `{}`", message)))?;
+
         println!("\n === Running Formater ===\n");
         self.fmt()?;
 

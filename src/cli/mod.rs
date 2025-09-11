@@ -6,11 +6,13 @@ pub mod save;
 use clap::Parser;
 use clap::Subcommand;
 
+use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::new_feat::NewFeatCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
 use crate::cli::save::SaveCommand;
+use crate::models::cli_data::CLI_DATA;
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]
@@ -18,6 +20,9 @@ use crate::cli::save::SaveCommand;
 pub struct Cli {
     #[arg(long, hide = true)]
     pub markdown_help: bool,
+
+    #[arg(long, short)]
+    pub config: Option<String>,
 
     // #[command(flatten)]
     // pub verbose: Verbosity<InfoLevel>,
@@ -44,7 +49,18 @@ impl Cli {
         // }
 
         if let Some(command) = &self.command {
+            self.load_cli_data()?;
             command.run()?;
+        }
+
+        Ok(())
+    }
+
+    fn load_cli_data(&self) -> ColEyre {
+        let mut data = CLI_DATA.write().unwrap();
+
+        if let Some(config) = &self.config {
+            data.set_config_path(config.to_string());
         }
 
         Ok(())

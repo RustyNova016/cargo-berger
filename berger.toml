@@ -1,5 +1,9 @@
 [[crates]]
 name="cargo-berger"
-remote="origin"
 path="./"
+default_branch="master"
+
+[[crates]]
+name="shaun"
+path="../shaun/"
 default_branch="master"

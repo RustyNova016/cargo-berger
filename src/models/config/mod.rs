@@ -13,8 +13,8 @@ pub struct WorkplaceConfig {
 }
 
 impl WorkplaceConfig {
-    pub fn load() -> ColEyreVal<Self> {
-        let mut config = File::open("berger.toml")
+    pub fn load(path: Option<&str>) -> ColEyreVal<Self> {
+        let mut config = File::open(path.unwrap_or("berger.toml"))
             .context("Couldn't open the berger config file. Make sure it exists")?;
         let mut data = String::new();
         config
@@ -27,7 +27,6 @@ impl WorkplaceConfig {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CrateConfig {
     pub name: String,
-    pub remote: String,
     pub path: String,
     pub default_branch: String,
 

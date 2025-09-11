@@ -1,8 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
-use crate::models::config::WorkplaceConfig;
-use crate::models::crate_data::CrateData;
+use crate::models::cli_data::CLI_DATA;
 
 /// Makes a new full commit. This commit is means a task is completed, the code is working and clean.
 /// This type of commit is "ready to merge"
@@ -13,11 +12,13 @@ pub struct FullCommand {
 
 impl FullCommand {
     pub fn run(&self) -> ColEyre {
-        let mut conf = WorkplaceConfig::load()?;
-        let crate_conf = conf.crates.pop().unwrap();
-        let crate_data = CrateData::open_repo(crate_conf)?;
+        let crates = CLI_DATA.write().unwrap().get_crates_data()?;
 
-        crate_data.make_full_commit(&self.message)?;
+        for crate_data in crates {
+            println!("[ Processing Crate `{}`]", crate_data.conf.name);
+
+            crate_data.make_full_commit(&self.message)?;
+        }
 
         Ok(())
     }
