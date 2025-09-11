@@ -97,8 +97,8 @@ impl GitRepo {
         }
     }
 
-    pub fn pull_branch(&self, branch: &str) -> ColEyre {
-        unwrap_status(self.get_base_command().arg("pull").arg(branch).output()?)
+    pub fn pull_branch(&self) -> ColEyre {
+        unwrap_status(self.get_base_command().arg("pull").output()?)
     }
 
     pub fn branch_exists(&self, branch: &str) -> ColEyreVal<bool> {

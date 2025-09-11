@@ -40,4 +40,9 @@ impl CrateData {
         self.repository.make_full_commit(message)?;
         Ok(())
     }
+
+    pub fn switch_to_default(&self) -> ColEyre {
+        self.repository.switch_branch(&self.conf.default_branch)?;
+        self.repository.pull_branch()
+    }
 }

@@ -29,6 +29,7 @@ pub struct CrateConfig {
     pub name: String,
     pub remote: String,
     pub path: String,
+    pub default_branch: String,
 
     #[serde(default)]
     pub sqlx: bool,
