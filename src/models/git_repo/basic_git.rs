@@ -158,5 +158,25 @@ impl GitRepo {
                 .arg("HEAD")
                 .output()?,
         )
+        .map(|bra| bra.trim_end().to_string())
+    }
+
+    pub fn push(self, set_upstream: bool, lease: bool, force: bool) -> ColEyre {
+        let mut cmd = self.get_base_command();
+        cmd.arg("push");
+
+        if set_upstream {
+            cmd.arg("--set-upstream")
+                .arg("origin") //TODO: Allow changing
+                .arg(self.get_current_branch()?);
+        }
+
+        if force {
+            cmd.arg("--force");
+        } else if lease {
+            cmd.arg("--force-with-lease");
+        }
+
+        unwrap_status(cmd.output()?)
     }
 }
