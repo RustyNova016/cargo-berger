@@ -1,5 +1,3 @@
-pub mod commit;
-pub mod rebase;
 use std::path::PathBuf;
 
 use git2::Repository;
@@ -7,6 +5,8 @@ use git2::Repository;
 use crate::ColEyreVal;
 
 pub mod basic_git;
+pub mod commit;
+pub mod rebase;
 
 pub struct GitRepo {
     path: PathBuf,

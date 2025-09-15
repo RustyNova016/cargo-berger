@@ -1,5 +1,5 @@
 use crate::ColEyreVal;
-use crate::models::git_repo::GitRepo;
+use crate::models::tool_bindings::git::GitRepo;
 
 pub enum CommitResult {
     /// Created a new commit
