@@ -19,7 +19,10 @@ impl CrateData {
         //     repository
         // })
 
-        let repository = GitRepo::new(PathBuf::from(conf.path.clone()));
+        let repository = GitRepo::new(
+            PathBuf::from(conf.path.clone()),
+            conf.default_branch.clone(),
+        );
         Ok(Self { conf, repository })
     }
 

@@ -1,9 +1,19 @@
+use std::process::ExitStatus;
 use std::process::Output;
 
 use color_eyre::eyre::eyre;
 
 use crate::ColEyre;
 use crate::ColEyreVal;
+
+/// Create an eyre error on bad status
+pub fn assert_status(status: ExitStatus) -> ColEyre {
+    if !status.success() {
+        return Err(eyre!("Command returned non zero exit status"));
+    }
+
+    Ok(())
+}
 
 pub fn unwrap_status(out: Output) -> ColEyre {
     if !out.status.success() {
