@@ -3,9 +3,9 @@ use std::sync::LazyLock;
 use std::sync::RwLock;
 
 use crate::ColEyreVal;
-use crate::models::config::CrateConfig;
 use crate::models::config::WorkplaceConfig;
-use crate::models::crate_data::CrateData;
+use crate::models::config::repository_config::RepositoryConfig;
+use crate::models::repository_data::RepositoryData;
 
 pub static CLI_DATA: LazyLock<RwLock<CliData>> = LazyLock::new(|| RwLock::new(CliData::default()));
 
@@ -38,26 +38,24 @@ impl CliData {
         None
     }
 
-    pub fn get_crates_data(&self) -> ColEyreVal<Vec<CrateData>> {
+    pub fn get_crates_data(&self) -> ColEyreVal<Vec<RepositoryData>> {
         let config_path = self.get_config_path();
 
         let conf = match config_path {
             Some(path) => WorkplaceConfig::load(&path)?,
             None => {
-                let crat = CrateConfig {
-                    name: "Current Folder".to_string(),
-                    path: "./".to_string(),
-                    default_branch: "master".to_string(),
-                    sqlx: false,
-                };
+                let repo_conf =
+                    RepositoryConfig::new("Current Folder".to_string(), "./".to_string());
 
-                WorkplaceConfig { crates: vec![crat] }
+                WorkplaceConfig {
+                    repositories: vec![repo_conf],
+                }
             }
         };
 
-        let mut out = Vec::with_capacity(conf.crates.len());
-        for crate_conf in conf.crates {
-            out.push(CrateData::open_repo(crate_conf)?);
+        let mut out = Vec::with_capacity(conf.repositories.len());
+        for crate_conf in conf.repositories {
+            out.push(RepositoryData::open_repo(crate_conf)?);
         }
 
         Ok(out)

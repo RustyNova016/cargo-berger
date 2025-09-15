@@ -1,7 +1,14 @@
-[[crates]]
+[[repository]]
 name="cargo-berger"
 path="./"
+
 default_branch="master"
+
+    [repository.rust]
+    fmt = true
+    clippy_hack = true
+    sqlx = false
+
 
 # [[crates]]
 # name="shaun"

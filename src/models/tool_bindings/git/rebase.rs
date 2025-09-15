@@ -1,5 +1,5 @@
 use crate::ColEyre;
-use crate::models::git_repo::GitRepo;
+use crate::models::tool_bindings::git::GitRepo;
 use crate::utils::cmd::assert_status;
 
 impl GitRepo {

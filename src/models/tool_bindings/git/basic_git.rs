@@ -8,7 +8,7 @@ use git2::Status;
 
 use crate::ColEyre;
 use crate::ColEyreVal;
-use crate::models::git_repo::GitRepo;
+use crate::models::tool_bindings::git::GitRepo;
 use crate::utils::cmd::assert_status;
 use crate::utils::cmd::unwrap_status;
 use crate::utils::cmd::unwrap_status_out;

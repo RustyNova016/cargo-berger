@@ -1,3 +1,4 @@
+pub mod rust_config;
 use std::fs::File;
 use std::io::Read as _;
 use std::path::Path;
@@ -7,10 +8,21 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::ColEyreVal;
+use crate::models::config::repository_config::RepositoryConfig;
+
+pub mod repository_config;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WorkplaceConfig {
-    pub crates: Vec<CrateConfig>,
+    #[serde(
+        alias = "crate",
+        alias = "crates",
+        alias = "repo",
+        alias = "repos",
+        alias = "repository",
+        alias = "repositories"
+    )]
+    pub repositories: Vec<RepositoryConfig>,
 }
 
 impl WorkplaceConfig {
@@ -23,14 +35,4 @@ impl WorkplaceConfig {
             .context("Couldn't read the autosort config file")?;
         toml::from_str(&data).context("Couldn't parse the berger config file")
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CrateConfig {
-    pub name: String,
-    pub path: String,
-    pub default_branch: String,
-
-    #[serde(default)]
-    pub sqlx: bool,
 }
