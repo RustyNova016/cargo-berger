@@ -14,6 +14,7 @@ impl PullCommand {
         for crate_data in crates {
             println!("[ Processing Crate `{}`]", crate_data.conf.name);
 
+            crate_data.repository.fetch(None, None)?;
             crate_data.repository.pull_branch()?;
         }
 
