@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::Read as _;
+use std::path::Path;
 
 use color_eyre::eyre::Context as _;
 use serde::Deserialize;
@@ -13,8 +14,8 @@ pub struct WorkplaceConfig {
 }
 
 impl WorkplaceConfig {
-    pub fn load(path: Option<&str>) -> ColEyreVal<Self> {
-        let mut config = File::open(path.unwrap_or("berger.toml"))
+    pub fn load(path: &Path) -> ColEyreVal<Self> {
+        let mut config = File::open(path)
             .context("Couldn't open the berger config file. Make sure it exists")?;
         let mut data = String::new();
         config
