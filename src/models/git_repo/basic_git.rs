@@ -9,6 +9,7 @@ use git2::Status;
 use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::git_repo::GitRepo;
+use crate::utils::cmd::assert_status;
 use crate::utils::cmd::unwrap_status;
 use crate::utils::cmd::unwrap_status_out;
 
@@ -178,5 +179,20 @@ impl GitRepo {
         }
 
         unwrap_status(cmd.output()?)
+    }
+
+    pub fn fetch(&self, remote: Option<String>, branch: Option<String>) -> ColEyre {
+        let mut cmd = self.get_base_command();
+        cmd.arg("fetch");
+
+        if let Some(remote) = remote {
+            cmd.arg(remote);
+        }
+
+        if let Some(branch) = branch {
+            cmd.arg(branch);
+        }
+
+        assert_status(cmd.status()?)
     }
 }

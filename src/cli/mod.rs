@@ -10,6 +10,7 @@ use crate::cli::pull::PullCommand;
 use crate::cli::push::PushCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
 use crate::cli::save::SaveCommand;
+use crate::cli::update_branch::RebaseDefaultCommand;
 use crate::models::cli_data::CLI_DATA;
 
 pub mod checkpoint;
@@ -20,6 +21,7 @@ pub mod pull;
 pub mod push;
 pub mod quick_switch;
 pub mod save;
+pub mod update_branch;
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]
@@ -83,6 +85,7 @@ pub enum Commands {
     Pull(PullCommand),
     Push(PushCommand),
     QuickSwitch(QuickSwitchCommand),
+    RebaseDefault(RebaseDefaultCommand),
     Save(SaveCommand),
 }
 
@@ -96,6 +99,7 @@ impl Commands {
             Self::Pull(val) => val.run()?,
             Self::Push(val) => val.run()?,
             Self::QuickSwitch(val) => val.run()?,
+            Self::RebaseDefault(val) => val.run()?,
             Self::Save(val) => val.run()?,
         }
 
