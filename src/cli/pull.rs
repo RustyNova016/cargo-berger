@@ -3,18 +3,18 @@ use clap::Parser;
 use crate::ColEyre;
 use crate::models::cli_data::CLI_DATA;
 
-/// Create a pull request. Requires github cli to be installed
+/// Pull the branch from the remote
 #[derive(Parser, Debug, Clone)]
-pub struct PRCommand {}
+pub struct PullCommand;
 
-impl PRCommand {
+impl PullCommand {
     pub fn run(&self) -> ColEyre {
         let crates = CLI_DATA.write().unwrap().get_crates_data()?;
 
         for crate_data in crates {
             println!("[ Processing Crate `{}`]", crate_data.conf.name);
 
-            crate_data.make_pr()?;
+            crate_data.repository.pull_branch()?;
         }
 
         Ok(())

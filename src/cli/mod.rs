@@ -1,10 +1,3 @@
-pub mod checkpoint;
-pub mod full;
-pub mod new_feat;
-pub mod pr;
-pub mod push;
-pub mod quick_switch;
-pub mod save;
 use clap::Parser;
 use clap::Subcommand;
 
@@ -13,10 +6,20 @@ use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::new_feat::NewFeatCommand;
 use crate::cli::pr::PRCommand;
+use crate::cli::pull::PullCommand;
 use crate::cli::push::PushCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
 use crate::cli::save::SaveCommand;
 use crate::models::cli_data::CLI_DATA;
+
+pub mod checkpoint;
+pub mod full;
+pub mod new_feat;
+pub mod pr;
+pub mod pull;
+pub mod push;
+pub mod quick_switch;
+pub mod save;
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]
@@ -77,6 +80,7 @@ pub enum Commands {
     Full(FullCommand),
     NewFeat(NewFeatCommand),
     Pr(PRCommand),
+    Pull(PullCommand),
     Push(PushCommand),
     QuickSwitch(QuickSwitchCommand),
     Save(SaveCommand),
@@ -89,6 +93,7 @@ impl Commands {
             Self::Full(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,
             Self::Pr(val) => val.run()?,
+            Self::Pull(val) => val.run()?,
             Self::Push(val) => val.run()?,
             Self::QuickSwitch(val) => val.run()?,
             Self::Save(val) => val.run()?,
