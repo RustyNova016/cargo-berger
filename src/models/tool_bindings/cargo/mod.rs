@@ -1,3 +1,4 @@
+pub mod cargo_file;
 use std::path::PathBuf;
 use std::process::Command;
 use std::process::Stdio;
