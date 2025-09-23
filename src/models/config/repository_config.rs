@@ -5,7 +5,6 @@ use crate::models::config::rust_config::RustConfig;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RepositoryConfig {
-    pub name: String,
     pub path: String,
 
     pub remote_url: Option<String>,
@@ -21,9 +20,8 @@ pub struct RepositoryConfig {
 }
 
 impl RepositoryConfig {
-    pub fn new(name: String, path: String) -> Self {
+    pub fn new(path: String) -> Self {
         Self {
-            name,
             path,
             remote_url: None,
             default_branch: default_branch(),

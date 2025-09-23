@@ -1,10 +1,8 @@
-[[repository]]
-name="cargo-berger"
+[repository.cargo-berger]
 path="./"
-
 default_branch="master"
 
-    [repository.rust]
+    [repository.cargo-berger.rust]
     fmt = true
     clippy_hack = true
     sqlx = false

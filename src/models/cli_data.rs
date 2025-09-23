@@ -1,11 +1,11 @@
 use std::path::PathBuf;
+use std::rc::Rc;
 use std::sync::LazyLock;
 use std::sync::RwLock;
 
 use crate::ColEyreVal;
-use crate::models::config::WorkplaceConfig;
-use crate::models::config::repository_config::RepositoryConfig;
-use crate::models::repository_data::RepositoryData;
+use crate::models::berger_data::BergerData;
+use crate::models::berger_data::BergerRc;
 
 pub static CLI_DATA: LazyLock<RwLock<CliData>> = LazyLock::new(|| RwLock::new(CliData::default()));
 
@@ -38,26 +38,14 @@ impl CliData {
         None
     }
 
-    pub fn get_crates_data(&self) -> ColEyreVal<Vec<RepositoryData>> {
+    pub fn get_berger_data(&self) -> ColEyreVal<BergerRc> {
         let config_path = self.get_config_path();
 
-        let conf = match config_path {
-            Some(path) => WorkplaceConfig::load(&path)?,
-            None => {
-                let repo_conf =
-                    RepositoryConfig::new("Current Folder".to_string(), "./".to_string());
-
-                WorkplaceConfig {
-                    repositories: vec![repo_conf],
-                }
-            }
+        let data = match config_path {
+            Some(path) => BergerData::load(&path)?,
+            None => BergerData::use_current()?,
         };
 
-        let mut out = Vec::with_capacity(conf.repositories.len());
-        for crate_conf in conf.repositories {
-            out.push(RepositoryData::open_repo(crate_conf)?);
-        }
-
-        Ok(out)
+        Ok(Rc::new(data))
     }
 }

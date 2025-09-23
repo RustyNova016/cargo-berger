@@ -162,7 +162,7 @@ impl GitRepo {
         .map(|bra| bra.trim_end().to_string())
     }
 
-    pub fn push(self, set_upstream: bool, lease: bool, force: bool) -> ColEyre {
+    pub fn push(&self, set_upstream: bool, lease: bool, force: bool) -> ColEyre {
         let mut cmd = self.get_base_command();
         cmd.arg("push");
 
