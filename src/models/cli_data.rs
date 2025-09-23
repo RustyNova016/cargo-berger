@@ -42,7 +42,7 @@ impl CliData {
         let config_path = self.get_config_path();
 
         let data = match config_path {
-            Some(path) => BergerData::load(&path)?,
+            Some(path) => BergerData::load(path)?,
             None => BergerData::use_current()?,
         };
 

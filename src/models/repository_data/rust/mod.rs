@@ -1,32 +1,43 @@
+use std::path::Path;
+
 use crate::ColEyre;
 use crate::ColEyreVal;
-use crate::models::repository_data::RepositoryData;
+use crate::models::config::rust_config::RustConfig;
 use crate::models::tool_bindings::cargo::Cargo;
+use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
-impl RepositoryData {
-    pub fn get_cargo_runner(&self) -> ColEyreVal<Cargo> {
-        Ok(Cargo::new(self.get_directory()?))
+/// Handle all the rust configuration and action for the repo
+pub struct RustData {
+    #[expect(dead_code)]
+    cargo_file: CargoFile,
+    rust_conf: RustConfig,
+
+    cargo: Cargo,
+}
+
+impl RustData {
+    pub fn load(directory: &Path, rust_conf: RustConfig) -> ColEyreVal<Self> {
+        Ok(Self {
+            cargo_file: CargoFile::load(directory.join("Cargo.toml"))?,
+            rust_conf,
+            cargo: Cargo::new(directory.to_path_buf()),
+        })
     }
 
-    pub fn rust_precommit_checks(&self) -> ColEyre {
-        let Some(rust_conf) = &self.conf.rust else {
-            return Ok(());
-        };
-        let cargo = self.get_cargo_runner()?;
-
-        if rust_conf.fmt {
+    pub fn precommit_actions(&self) -> ColEyre {
+        if self.rust_conf.fmt {
             println!("\n === Running Formater ===\n");
-            cargo.fmt()?;
+            self.cargo.fmt()?;
         }
 
-        if rust_conf.sqlx {
+        if self.rust_conf.sqlx {
             println!("\n === Running sqlx prepare ===\n");
-            cargo.sqlx_prepare()?;
+            self.cargo.sqlx_prepare()?;
         }
 
-        if rust_conf.clippy_hack {
+        if self.rust_conf.clippy_hack {
             println!("\n === Running Clippy Hack ===\n");
-            cargo.clippy_hack()?;
+            self.cargo.clippy_hack()?;
         }
 
         Ok(())
