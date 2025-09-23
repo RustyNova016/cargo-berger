@@ -1,3 +1,4 @@
+pub mod rust;
 use clap::Parser;
 use clap::Subcommand;
 
@@ -9,6 +10,7 @@ use crate::cli::pr::PRCommand;
 use crate::cli::pull::PullCommand;
 use crate::cli::push::PushCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
+use crate::cli::rust::RustCommand;
 use crate::cli::save::SaveCommand;
 use crate::cli::update_branch::RebaseDefaultCommand;
 use crate::models::cli_data::CLI_DATA;
@@ -86,6 +88,7 @@ pub enum Commands {
     Push(PushCommand),
     QuickSwitch(QuickSwitchCommand),
     RebaseDefault(RebaseDefaultCommand),
+    Rust(RustCommand),
     Save(SaveCommand),
 }
 
@@ -100,6 +103,7 @@ impl Commands {
             Self::Push(val) => val.run()?,
             Self::QuickSwitch(val) => val.run()?,
             Self::RebaseDefault(val) => val.run()?,
+            Self::Rust(val) => val.run()?,
             Self::Save(val) => val.run()?,
         }
 

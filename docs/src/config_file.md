@@ -1,6 +1,6 @@
 # Config file
 
-By default, cargo Berger check for a configuration file `berger.toml` in the current directory. This configuration file allows configuring the crates in the workplace.
+By default, cargo Berger check for a configuration file `berger.toml` in the current directory. This configuration file allows configuring the crates in the workspace.
 
 ## Exemple:
 

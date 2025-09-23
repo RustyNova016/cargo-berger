@@ -8,7 +8,7 @@ use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
 /// Handle all the rust configuration and action for the repo
 pub struct RustData {
-    #[allow(dead_code)]
+    #[expect(dead_code)]
     cargo_file: CargoFile,
     rust_conf: RustConfig,
 
@@ -18,7 +18,7 @@ pub struct RustData {
 impl RustData {
     pub fn load(directory: &Path, rust_conf: RustConfig) -> ColEyreVal<Self> {
         Ok(Self {
-            cargo_file: CargoFile::load(&directory.join("Cargo.toml"))?,
+            cargo_file: CargoFile::load(directory.join("Cargo.toml"))?,
             rust_conf,
             cargo: Cargo::new(directory.to_path_buf()),
         })

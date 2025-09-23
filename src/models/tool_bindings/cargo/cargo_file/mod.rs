@@ -1,35 +1,52 @@
-pub mod workplace;
 use std::fs::File;
 use std::io::Read as _;
-use std::path::Path;
+use std::io::Write;
+use std::path::PathBuf;
+use std::sync::Mutex;
 
 use color_eyre::eyre::Context as _;
 use toml_edit::DocumentMut;
 
+use crate::ColEyre;
 use crate::ColEyreVal;
 
+pub mod patch;
+pub mod workspace;
+
 pub struct CargoFile {
-    doc: DocumentMut,
+    file_path: PathBuf,
+    doc: Mutex<DocumentMut>,
 }
 
 impl CargoFile {
-    pub fn load(path: &Path) -> ColEyreVal<Self> {
-        let mut file = File::open(path)
-            .context("Couldn't open the berger config file. Make sure it exists")?;
+    pub fn load_or_create(path: PathBuf) -> ColEyreVal<Self> {
+        if !path.exists() {
+            File::create(&path)?;
+        }
+
+        Self::load(path)
+    }
+
+    pub fn load(path: PathBuf) -> ColEyreVal<Self> {
+        let mut file = File::open(&path)
+            .context("Couldn't open the cargo config file. Make sure it exists")?;
+
         let mut data = String::new();
         file.read_to_string(&mut data)
-            .context("Couldn't read the autosort config file")?;
+            .context("Couldn't read the cargo config file")?;
 
-        Ok(Self { doc: data.parse()? })
+        Ok(Self {
+            doc: Mutex::new(data.parse()?),
+            file_path: path,
+        })
     }
 
-    pub fn add_git_patch(&mut self, dep_name: String, git: String, rev: String) {
-        self.doc["patch"]["crates-io"][dep_name.clone()]["git"] = git.into();
-        self.doc["patch"]["crates-io"][dep_name]["rev"] = rev.into();
-    }
+    pub fn save(&self) -> ColEyre {
+        let mut file = File::create(&self.file_path)
+            .context("Couldn't open the berger config file. Make sure it exists")?;
+        let doc = self.doc.lock().unwrap();
 
-    pub fn add_local_patch(&mut self, dep_name: String, path: &Path) {
-        self.doc["patch"]["crates-io"][dep_name.clone()]["path"] =
-            path.to_string_lossy().to_string().into();
+        write!(file, "{}", doc)?;
+        Ok(())
     }
 }
