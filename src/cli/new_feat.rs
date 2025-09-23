@@ -12,21 +12,19 @@ pub struct NewFeatCommand {
 
 impl NewFeatCommand {
     pub fn run(&self) -> ColEyre {
-        let crates = CLI_DATA.write().unwrap().get_crates_data()?;
+        let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
-        for crate_data in crates {
-            println!("[ Processing Crate `{}`]", crate_data.conf.name);
+        for repo_data in berger.repo_data.values() {
+            println!("[ Processing repository `{}`]", repo_data.name);
 
-            crate_data.make_tmp_save_commit(self.message.as_deref().or(Some(&format!(
+            repo_data.make_tmp_save_commit(self.message.as_deref().or(Some(&format!(
                 "Switch to new feature branch `{}`",
                 &self.branch
             ))))?;
 
-            crate_data.switch_to_default()?;
+            repo_data.switch_to_default()?;
 
-            crate_data
-                .repository
-                .switch_branch_or_create(&self.branch)?;
+            repo_data.repository.switch_branch_or_create(&self.branch)?;
         }
 
         Ok(())

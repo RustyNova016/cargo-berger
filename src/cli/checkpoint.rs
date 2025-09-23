@@ -12,12 +12,12 @@ pub struct CheckpointCommand {
 
 impl CheckpointCommand {
     pub fn run(&self) -> ColEyre {
-        let crates = CLI_DATA.write().unwrap().get_crates_data()?;
+        let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
-        for crate_data in crates {
-            println!("[ Processing Crate `{}`]", crate_data.conf.name);
+        for repo_data in berger.repo_data.values() {
+            println!("[ Processing repository `{}`]", repo_data.name);
 
-            crate_data
+            repo_data
                 .repository
                 .make_checkpoint_commit(self.message.as_deref())?;
         }

@@ -1,4 +1,5 @@
 pub mod rust_config;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read as _;
 use std::path::Path;
@@ -13,7 +14,7 @@ use crate::models::config::repository_config::RepositoryConfig;
 pub mod repository_config;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct WorkplaceConfig {
+pub struct BergerConfig {
     #[serde(
         alias = "crate",
         alias = "crates",
@@ -22,10 +23,10 @@ pub struct WorkplaceConfig {
         alias = "repository",
         alias = "repositories"
     )]
-    pub repositories: Vec<RepositoryConfig>,
+    pub repositories: HashMap<String, RepositoryConfig>,
 }
 
-impl WorkplaceConfig {
+impl BergerConfig {
     pub fn load(path: &Path) -> ColEyreVal<Self> {
         let mut config = File::open(path)
             .context("Couldn't open the berger config file. Make sure it exists")?;
@@ -34,5 +35,17 @@ impl WorkplaceConfig {
             .read_to_string(&mut data)
             .context("Couldn't read the autosort config file")?;
         toml::from_str(&data).context("Couldn't parse the berger config file")
+    }
+
+    /// Use the current folder as the only repo available. Used in case there's no berger file
+    pub fn use_current() -> ColEyreVal<Self> {
+        let repo_conf = RepositoryConfig::new("./".to_string());
+
+        let mut repos = HashMap::new();
+        repos.insert("current".to_string(), repo_conf);
+
+        Ok(BergerConfig {
+            repositories: repos,
+        })
     }
 }
