@@ -3,7 +3,7 @@ use clap::Parser as _;
 
 use crate::cli::Cli;
 
-pub mod cli;
+mod cli;
 pub mod models;
 
 pub(crate) type ColEyreVal<T> = color_eyre::Result<T>;

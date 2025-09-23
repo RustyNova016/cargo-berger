@@ -3,6 +3,7 @@ use serde::Serialize;
 
 use crate::models::config::rust_config::RustConfig;
 
+/// Configuration for a repository in the herd
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RepositoryConfig {
     pub path: String,

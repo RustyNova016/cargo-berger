@@ -2,7 +2,7 @@ use clap::Parser;
 
 use crate::models::cli_data::CLI_DATA;
 
-/// Pull the branch from the remote
+/// Initialise a rust workspace with the crates in Berger. You need to rerun this command everytime you add a crate.
 #[derive(Parser, Debug, Clone)]
 pub struct RustWorkspaceInitCommand;
 
