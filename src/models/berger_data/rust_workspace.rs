@@ -1,13 +1,15 @@
+use std::fs::remove_dir_all;
+use std::fs::rename;
 use std::path::PathBuf;
 
 use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::berger_data::BergerData;
+use crate::models::repository_data::RepositoryData;
 use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
 pub struct RustWorkspace {
     /// The root of the workspace, with the Cargo.toml file
-    #[expect(dead_code)]
     workspace_root: PathBuf,
     cargo_file: CargoFile,
 }
@@ -34,6 +36,58 @@ impl RustWorkspace {
         }
 
         self.cargo_file.save()?;
+
+        Ok(())
+    }
+
+    pub fn turn_off(&self) -> ColEyre {
+        let cargo_file = self.workspace_root.join("Cargo.toml");
+        if cargo_file.exists() {
+            rename(cargo_file, self.workspace_root.join("Cargo.disabled.toml"))?;
+        }
+
+        let cargo_lock = self.workspace_root.join("Cargo.lock");
+        if cargo_lock.exists() {
+            rename(cargo_lock, self.workspace_root.join("Cargo.disabled.lock"))?;
+        }
+
+        let target_dir = self.workspace_root.join("target");
+        if target_dir.exists() {
+            rename(target_dir, self.workspace_root.join("target.disabled"))?;
+        }
+
+        Ok(())
+    }
+
+    pub fn turn_on(&self, repos: &[&RepositoryData]) -> ColEyre {
+        let target_dir = self.workspace_root.join("target.disabled");
+        if target_dir.exists() {
+            rename(target_dir, self.workspace_root.join("target"))?;
+        }
+
+        let cargo_lock = self.workspace_root.join("Cargo.disabled.lock");
+        if cargo_lock.exists() {
+            rename(cargo_lock, self.workspace_root.join("Cargo.lock"))?;
+        }
+
+        let cargo_file = self.workspace_root.join("Cargo.disabled.toml");
+        if cargo_file.exists() {
+            rename(cargo_file, self.workspace_root.join("Cargo.toml"))?;
+        }
+
+        // Remove the target directories from the inner crates
+
+        for repo in repos {
+            // Only do rust repos
+            if repo.rust.is_none() {
+                continue;
+            }
+
+            let target = repo.root_folder.join("target");
+            if target.exists() {
+                remove_dir_all(target)?;
+            }
+        }
 
         Ok(())
     }
