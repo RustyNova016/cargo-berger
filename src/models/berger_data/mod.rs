@@ -19,7 +19,7 @@ pub type BergerRc = Rc<BergerData>;
 /// *You could say it's the **herd** of the app*
 pub struct BergerData {
     /// Path to the root of the workspace;
-    pub path: PathBuf,
+    pub workspace_root: PathBuf,
 
     /// Key value store of the Name + Repository data
     pub repo_data: HashMap<String, RepositoryData>,
@@ -28,34 +28,41 @@ pub struct BergerData {
 }
 
 impl BergerData {
-    pub fn load(path: PathBuf) -> ColEyreVal<Self> {
-        let conf = BergerConfig::load(&path)?;
+    pub fn load(config_file: PathBuf) -> ColEyreVal<Self> {
+        let conf = BergerConfig::load(&config_file)?;
 
-        let path = path
+        let workspace_root = config_file
             .canonicalize()?
             .parent()
             .expect("Can't load a directory as a berger file")
             .to_path_buf();
-        Self::from_berger_config(path, conf)
+
+        Self::from_berger_config(workspace_root, conf)
     }
 
-    /// Use the current folder as the only repo available. Used in case there's no berger file
+    // /// Use the current folder as the only repo available. Used in case there's no berger file
     pub fn use_current() -> ColEyreVal<Self> {
         Self::from_berger_config(current_dir()?, BergerConfig::use_current()?)
     }
 
     pub fn from_berger_config(
-        path: PathBuf,
+        workspace_root: PathBuf,
         conf: BergerConfig,
     ) -> Result<BergerData, color_eyre::eyre::Error> {
         let mut data = HashMap::new();
 
         for (name, crate_conf) in conf.repositories {
-            data.insert(name.clone(), RepositoryData::open_repo(name, crate_conf)?);
+            let repo = if conf.auto_init {
+                RepositoryData::initialize_repo(name.clone(), crate_conf, &workspace_root)?
+            } else {
+                RepositoryData::open_repo(name.clone(), crate_conf)?
+            };
+
+            data.insert(name.clone(), repo);
         }
 
         Ok(Self {
-            path,
+            workspace_root,
             repo_data: data,
             rust_workspace: OnceCell::new(),
         })
@@ -72,7 +79,7 @@ impl BergerData {
             return Ok(Some(val));
         }
 
-        let rust = RustWorkspace::load_or_create(self.path.to_path_buf())?;
+        let rust = RustWorkspace::load_or_create(self.workspace_root.to_path_buf())?;
         Ok(Some(self.rust_workspace.get_or_init(|| rust)))
     }
 }

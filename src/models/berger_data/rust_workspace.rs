@@ -27,9 +27,9 @@ impl RustWorkspace {
 
         for repo in berger.repo_data.values() {
             if let Some(_rust) = &repo.rust {
-                self.cargo_file.add_crate_to_workspace(&repo.path)?;
+                self.cargo_file.add_crate_to_workspace(&repo.root_folder)?;
                 self.cargo_file
-                    .add_local_patch(repo.name.to_string(), &repo.path);
+                    .add_local_patch(repo.name.to_string(), &repo.root_folder);
             }
         }
 

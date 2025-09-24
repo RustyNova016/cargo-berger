@@ -13,6 +13,7 @@ use crate::models::config::repository_config::RepositoryConfig;
 
 pub mod repository_config;
 
+/// Configuration root
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BergerConfig {
     #[serde(
@@ -24,6 +25,9 @@ pub struct BergerConfig {
         alias = "repositories"
     )]
     pub repositories: HashMap<String, RepositoryConfig>,
+
+    #[serde(default = "default_auto_init")]
+    pub auto_init: bool,
 }
 
 impl BergerConfig {
@@ -46,6 +50,11 @@ impl BergerConfig {
 
         Ok(BergerConfig {
             repositories: repos,
+            auto_init: false,
         })
     }
+}
+
+fn default_auto_init() -> bool {
+    true
 }

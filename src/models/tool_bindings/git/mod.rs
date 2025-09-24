@@ -1,3 +1,4 @@
+pub mod clone;
 use std::path::PathBuf;
 
 use git2::Repository;

@@ -1,3 +1,4 @@
+pub mod init;
 pub mod rust;
 use clap::Parser;
 use clap::Subcommand;
@@ -5,6 +6,7 @@ use clap::Subcommand;
 use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::full::FullCommand;
+use crate::cli::init::InitCommand;
 use crate::cli::new_feat::NewFeatCommand;
 use crate::cli::pr::PRCommand;
 use crate::cli::pull::PullCommand;
@@ -34,6 +36,9 @@ pub struct Cli {
 
     #[arg(long, short)]
     pub config: Option<String>,
+
+    #[arg(long, short)]
+    pub no_auto_init: bool,
 
     // #[command(flatten)]
     // pub verbose: Verbosity<InfoLevel>,
@@ -74,6 +79,10 @@ impl Cli {
             data.set_config_path(config.to_string());
         }
 
+        if self.no_auto_init {
+            data.set_auto_init(false);
+        }
+
         Ok(())
     }
 }
@@ -82,6 +91,7 @@ impl Cli {
 pub enum Commands {
     Checkpoint(CheckpointCommand),
     Full(FullCommand),
+    Init(InitCommand),
     #[clap(alias = "new_feat")]
     NewFeat(NewFeatCommand),
     Pr(PRCommand),
@@ -89,7 +99,6 @@ pub enum Commands {
     Push(PushCommand),
     #[clap(aliases = &["quickswitch", "quick_switch"])]
     QuickSwitch(QuickSwitchCommand),
-
     #[clap(aliases = &["rebase_default", "refresh_branch", "refresh-branch"])]
     RebaseDefault(RebaseDefaultCommand),
     Rust(RustCommand),
@@ -101,6 +110,7 @@ impl Commands {
         match self {
             Self::Checkpoint(val) => val.run()?,
             Self::Full(val) => val.run()?,
+            Self::Init(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,
             Self::Pr(val) => val.run()?,
             Self::Pull(val) => val.run()?,
