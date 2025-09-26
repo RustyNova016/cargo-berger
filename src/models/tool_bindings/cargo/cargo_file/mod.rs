@@ -68,4 +68,16 @@ impl CargoFile {
         write!(file, "{}", doc)?;
         Ok(())
     }
+
+    /// Return true if there is a crate definition in the lock file
+    pub fn has_crate_def(&self) -> bool {
+        let doc = self.doc.lock().unwrap();
+        doc.contains_key("package")
+    }
+
+    /// Return true if there is a workspace definition in the lock file
+    pub fn has_workspace_def(&self) -> bool {
+        let doc = self.doc.lock().unwrap();
+        doc.contains_key("workspace")
+    }
 }

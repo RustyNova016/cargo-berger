@@ -40,7 +40,7 @@ impl BergerData {
         Self::from_berger_config(workspace_root, conf)
     }
 
-    // /// Use the current folder as the only repo available. Used in case there's no berger file
+    /// Use the current folder as the only repo available. Used in case there's no berger file
     pub fn use_current() -> ColEyreVal<Self> {
         Self::from_berger_config(current_dir()?, BergerConfig::use_current()?)
     }
@@ -75,13 +75,9 @@ impl BergerData {
             return Ok(Some(val));
         }
 
-        let rust = if create {
-            match RustWorkspace::try_load(self.workspace_root.to_path_buf())? {
-                Some(wp) => wp,
-                None => return Ok(None),
-            }
-        } else {
-            RustWorkspace::load_or_create(self.workspace_root.to_path_buf())?
+        let rust = match RustWorkspace::load(self.workspace_root.to_path_buf(), create)? {
+            Some(wp) => wp,
+            None => return Ok(None),
         };
 
         Ok(Some(self.rust_workspace.get_or_init(|| rust)))
