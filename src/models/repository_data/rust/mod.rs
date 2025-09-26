@@ -54,6 +54,11 @@ impl RustData {
             self.cargo.clippy()?;
         }
 
+        if self.rust_conf.ci.semver {
+            println!("\n === Running semver check ===\n");
+            self.cargo.cargo_machete()?;
+        }
+
         if self.rust_conf.ci.machete {
             println!("\n === Running machete check ===\n");
             self.cargo.cargo_machete()?;

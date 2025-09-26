@@ -12,3 +12,4 @@ default_branch="master"
     clippy = true
     msrv = true
     machete = true
+    semver = true

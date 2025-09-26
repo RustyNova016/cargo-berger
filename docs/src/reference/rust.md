@@ -11,6 +11,8 @@
 
 ## CI
 
+Please note that not being on by default doesn't mean "not recommended"! Most of them requires additional binaries, which means extra attention
+
 
 | Name      | Required | Format | Default | Description                                                  |
 | --------- | -------- | ------ | ------- | ------------------------------------------------------------ |

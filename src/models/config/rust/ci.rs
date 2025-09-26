@@ -17,6 +17,9 @@ pub struct RustCIConfig {
 
     #[serde(default = "default_machete")]
     pub machete: bool,
+
+    #[serde(default = "default_semver")]
+    pub semver: bool,
 }
 
 fn default_fmt() -> bool {
@@ -39,6 +42,10 @@ fn default_machete() -> bool {
     false
 }
 
+fn default_semver() -> bool {
+    false
+}
+
 impl Default for RustCIConfig {
     fn default() -> Self {
         Self {
@@ -47,6 +54,7 @@ impl Default for RustCIConfig {
             msrv: default_msrv(),
             msrv_find: default_msrv_find(),
             machete: default_msrv_find(),
+            semver: default_semver(),
         }
     }
 }

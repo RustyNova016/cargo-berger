@@ -12,12 +12,11 @@ clap = { version = "4.5.41", features = [
     "derive",
     "color",
 ] }
-clap_complete = "4.5.55"
 clap-markdown = "0.1.5"
 
 # Errors
 color-eyre = "0.6.5"
-snafu = {version = "0.8.9", features = ["rust_1_81"]}
+# snafu = {version = "0.8.9", features = ["rust_1_81"]}
 
 # Others
 toml = "0.9.7"
