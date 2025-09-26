@@ -1,0 +1,34 @@
+name: Rust
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ "master", "main", "develop"]
+  pull_request:
+    branches: [ "master", "main", "develop" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: 1
+
+jobs:
+  berger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Install minimal toolchain
+      - name: Install minimal stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-berger for full suite testing
+        run: cargo install --git https://github.com/RustyNova016/cargo-berger --rev 9194544cc355b31ad49c4f5d397d25c8d9db28c6
+
+      - name: Run berger ci
+        run: cargo-berger rust ci
