@@ -25,9 +25,6 @@ jobs:
         with:
           components: rustfmt, clippy
 
-      - name: Install minimal nightly toolchain
-        uses: dtolnay/rust-toolchain@nightly
-
       - uses: Swatinem/rust-cache@v2
 
       - name: Install cargo-berger for full suite testing
@@ -42,8 +39,11 @@ jobs:
       - name: Install cargo-machete
         run: cargo install cargo-machete --locked
 
-      - name: Install cargo-minimal-versions
-        run: cargo +stable install cargo-minimal-versions --locked
+      - name: Install cargo-nextest
+        run: cargo install cargo-nextest --locked
+
+      # - name: Install cargo-minimal-versions
+      #   run: cargo +stable install cargo-minimal-versions --locked
 
       - name: Run berger ci
         run: cargo-berger rust ci

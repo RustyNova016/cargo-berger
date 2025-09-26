@@ -10,6 +10,7 @@ pub mod cargo_file;
 pub mod clippy;
 pub mod external;
 pub mod fmt;
+pub mod test;
 
 pub struct Cargo {
     pub current_dir: PathBuf,
