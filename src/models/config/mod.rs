@@ -1,4 +1,3 @@
-pub mod rust_config;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read as _;
@@ -12,6 +11,7 @@ use crate::ColEyreVal;
 use crate::models::config::repository_config::RepositoryConfig;
 
 pub mod repository_config;
+pub mod rust;
 
 /// Configuration root
 #[derive(Debug, Serialize, Deserialize)]

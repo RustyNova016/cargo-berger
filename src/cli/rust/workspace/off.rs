@@ -14,10 +14,12 @@ impl RustWorkspaceOffCommand {
     pub fn run(&self) -> crate::ColEyre {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
-        berger
-            .get_rust_workspace(true)?
-            .expect("The workspace file should have been created")
-            .turn_off()?;
+        match berger.get_rust_workspace(true)? {
+            Some(wp) => wp.turn_off()?,
+            None => println!(
+                "Couldn't turn off the workspace. No suitable `Cargo.toml` file has been found"
+            ),
+        }
 
         Ok(())
     }

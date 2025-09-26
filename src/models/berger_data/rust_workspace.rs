@@ -15,12 +15,29 @@ pub struct RustWorkspace {
 }
 
 impl RustWorkspace {
-    /// Load or create a workspace in the designated folder
-    pub fn load_or_create(workspace_root: PathBuf) -> ColEyreVal<Self> {
-        Ok(Self {
-            cargo_file: CargoFile::load_or_create(workspace_root.join("Cargo.toml"))?,
+    /// Load a workspace in the designated folder.
+    ///
+    /// Return [`None`] if the file doesn't exists and shouldn't be created, or exist but has a crate definition as well
+    pub fn load(workspace_root: PathBuf, create: bool) -> ColEyreVal<Option<Self>> {
+        let file_path = workspace_root.join("Cargo.toml");
+
+        let cargo_file = if create {
+            CargoFile::load_or_create(file_path)?
+        } else {
+            let Some(cargo_file) = CargoFile::try_load(file_path)? else {
+                return Ok(None);
+            };
+            cargo_file
+        };
+
+        if cargo_file.has_crate_def() {
+            return Ok(None);
+        }
+
+        Ok(Some(Self {
+            cargo_file,
             workspace_root,
-        })
+        }))
     }
 
     /// Initialize the workspace by adding all the members and patches

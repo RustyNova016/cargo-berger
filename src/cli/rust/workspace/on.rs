@@ -13,10 +13,12 @@ impl RustWorkspaceOnCommand {
 
         let repos = berger.repo_data.values().collect_vec();
 
-        berger
-            .get_rust_workspace(true)?
-            .expect("The workspace file should have been created")
-            .turn_on(&repos)?;
+        match berger.get_rust_workspace(true)? {
+            Some(wp) => wp.turn_on(&repos)?,
+            None => println!(
+                "Couldn't turn on the workspace. No suitable `Cargo.toml` file has been found"
+            ),
+        }
 
         Ok(())
     }

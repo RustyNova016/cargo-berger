@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::models::config::rust_config::RustConfig;
+use crate::models::config::rust::RustConfig;
 
 /// Configuration for a repository in the herd
 #[derive(Debug, Serialize, Deserialize)]

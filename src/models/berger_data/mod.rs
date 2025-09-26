@@ -40,7 +40,7 @@ impl BergerData {
         Self::from_berger_config(workspace_root, conf)
     }
 
-    // /// Use the current folder as the only repo available. Used in case there's no berger file
+    /// Use the current folder as the only repo available. Used in case there's no berger file
     pub fn use_current() -> ColEyreVal<Self> {
         Self::from_berger_config(current_dir()?, BergerConfig::use_current()?)
     }
@@ -69,17 +69,17 @@ impl BergerData {
     }
 
     pub fn get_rust_workspace(&self, create: bool) -> ColEyreVal<Option<&RustWorkspace>> {
-        if !create {
-            return Ok(self.rust_workspace.get());
-        };
-
         //TODO: Rework this mess once rust gives us OnceCell::try_init()...
 
         if let Some(val) = self.rust_workspace.get() {
             return Ok(Some(val));
         }
 
-        let rust = RustWorkspace::load_or_create(self.workspace_root.to_path_buf())?;
+        let rust = match RustWorkspace::load(self.workspace_root.to_path_buf(), create)? {
+            Some(wp) => wp,
+            None => return Ok(None),
+        };
+
         Ok(Some(self.rust_workspace.get_or_init(|| rust)))
     }
 }

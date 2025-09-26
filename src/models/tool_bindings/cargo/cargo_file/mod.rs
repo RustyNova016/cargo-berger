@@ -41,6 +41,25 @@ impl CargoFile {
         })
     }
 
+    /// Try loading the file, but cancel if it isn't found
+    pub fn try_load(path: PathBuf) -> ColEyreVal<Option<Self>> {
+        if !path.exists() {
+            return Ok(None);
+        }
+
+        let mut file = File::open(&path)
+            .context("Couldn't open the cargo config file. Make sure it exists")?;
+
+        let mut data = String::new();
+        file.read_to_string(&mut data)
+            .context("Couldn't read the cargo config file")?;
+
+        Ok(Some(Self {
+            doc: Mutex::new(data.parse()?),
+            file_path: path,
+        }))
+    }
+
     pub fn save(&self) -> ColEyre {
         let mut file = File::create(&self.file_path)
             .context("Couldn't open the berger config file. Make sure it exists")?;
@@ -48,5 +67,17 @@ impl CargoFile {
 
         write!(file, "{}", doc)?;
         Ok(())
+    }
+
+    /// Return true if there is a crate definition in the lock file
+    pub fn has_crate_def(&self) -> bool {
+        let doc = self.doc.lock().unwrap();
+        doc.contains_key("package")
+    }
+
+    /// Return true if there is a workspace definition in the lock file
+    pub fn has_workspace_def(&self) -> bool {
+        let doc = self.doc.lock().unwrap();
+        doc.contains_key("workspace")
     }
 }
