@@ -28,10 +28,13 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Install cargo-berger for full suite testing
-        run: cargo install --git https://github.com/RustyNova016/cargo-berger --rev 451b2e1835ef9a64f466745ddc2f543eff6ed437
+        run: cargo install --git https://github.com/RustyNova016/cargo-berger --branch ci_integration
 
       - name: Install cargo-msrv
         run: cargo install cargo-msrv --all-features
+
+      - name: Install cargo-machete
+        run: cargo install cargo-machete --locked
 
       - name: Run berger ci
         run: cargo-berger rust ci

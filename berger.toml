@@ -11,3 +11,4 @@ default_branch="master"
     fmt = true
     clippy = true
     msrv = true
+    machete = true

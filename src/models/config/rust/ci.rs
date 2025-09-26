@@ -14,6 +14,9 @@ pub struct RustCIConfig {
 
     #[serde(default = "default_msrv_find")]
     pub msrv_find: bool,
+
+    #[serde(default = "default_machete")]
+    pub machete: bool,
 }
 
 fn default_fmt() -> bool {
@@ -32,6 +35,10 @@ fn default_msrv_find() -> bool {
     true
 }
 
+fn default_machete() -> bool {
+    false
+}
+
 impl Default for RustCIConfig {
     fn default() -> Self {
         Self {
@@ -39,6 +46,7 @@ impl Default for RustCIConfig {
             clippy: default_clippy(),
             msrv: default_msrv(),
             msrv_find: default_msrv_find(),
+            machete: default_msrv_find(),
         }
     }
 }

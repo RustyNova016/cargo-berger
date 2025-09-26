@@ -54,13 +54,18 @@ impl RustData {
             self.cargo.clippy()?;
         }
 
+        if self.rust_conf.ci.machete {
+            println!("\n === Running machete check ===\n");
+            self.cargo.cargo_machete()?;
+        }
+
         if self.rust_conf.ci.msrv {
             println!("\n === Running msrv check ===\n");
-            let res = self.cargo.cargo_msrc_verify();
+            let res = self.cargo.cargo_msrv_verify();
 
             if res.is_err() && self.rust_conf.ci.msrv_find {
                 println!("\n === Finding new msrv ===\n");
-                self.cargo.cargo_msrc_find()?;
+                self.cargo.cargo_msrv_find()?;
                 return res;
             }
         }

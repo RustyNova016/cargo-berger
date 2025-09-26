@@ -6,24 +6,24 @@ use crate::utils::cmd::assert_status;
 
 impl Cargo {
     /// Runs `cargo msrv verify`
-    pub fn cargo_msrc_verify(&self) -> ColEyre {
+    pub fn cargo_msrv_verify(&self) -> ColEyre {
         assert_status(
             self.get_base_cargo_command()
                 .arg("msrv")
                 .arg("verify")
                 .status()?,
         )
-        .context("Error while verifying the msrv code")
+        .context("Error while verifying the msrv")
     }
 
     /// Runs `cargo msrv find`
-    pub fn cargo_msrc_find(&self) -> ColEyre {
+    pub fn cargo_msrv_find(&self) -> ColEyre {
         assert_status(
             self.get_base_cargo_command()
                 .arg("msrv")
                 .arg("find")
                 .status()?,
         )
-        .context("Error while verifying the msrv code")
+        .context("Error while find the msrv")
     }
 }
