@@ -15,6 +15,18 @@ pub struct RustWorkspace {
 }
 
 impl RustWorkspace {
+    /// Load a workspace in the designated folder, and cancel if it doesn't exists
+    pub fn try_load(workspace_root: PathBuf) -> ColEyreVal<Option<Self>> {
+        let Some(cargo_file) = CargoFile::try_load(workspace_root.join("Cargo.toml"))? else {
+            return Ok(None);
+        };
+
+        Ok(Some(Self {
+            cargo_file,
+            workspace_root,
+        }))
+    }
+
     /// Load or create a workspace in the designated folder
     pub fn load_or_create(workspace_root: PathBuf) -> ColEyreVal<Self> {
         Ok(Self {

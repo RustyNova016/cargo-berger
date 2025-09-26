@@ -69,17 +69,21 @@ impl BergerData {
     }
 
     pub fn get_rust_workspace(&self, create: bool) -> ColEyreVal<Option<&RustWorkspace>> {
-        if !create {
-            return Ok(self.rust_workspace.get());
-        };
-
         //TODO: Rework this mess once rust gives us OnceCell::try_init()...
 
         if let Some(val) = self.rust_workspace.get() {
             return Ok(Some(val));
         }
 
-        let rust = RustWorkspace::load_or_create(self.workspace_root.to_path_buf())?;
+        let rust = if create {
+            match RustWorkspace::try_load(self.workspace_root.to_path_buf())? {
+                Some(wp) => wp,
+                None => return Ok(None),
+            }
+        } else {
+            RustWorkspace::load_or_create(self.workspace_root.to_path_buf())?
+        };
+
         Ok(Some(self.rust_workspace.get_or_init(|| rust)))
     }
 }
