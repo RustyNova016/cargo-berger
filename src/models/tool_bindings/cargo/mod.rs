@@ -8,6 +8,7 @@ use crate::ColEyre;
 
 pub mod cargo_file;
 pub mod clippy;
+pub mod external;
 pub mod fmt;
 
 pub struct Cargo {
