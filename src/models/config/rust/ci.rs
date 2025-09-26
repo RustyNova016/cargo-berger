@@ -9,6 +9,12 @@ pub struct RustCIConfig {
     #[serde(default = "default_clippy")]
     pub clippy: bool,
 
+    #[serde(default = "default_test")]
+    pub test: bool,
+
+    #[serde(default = "default_nextest")]
+    pub nextest: bool,
+
     #[serde(default = "default_msrv")]
     pub msrv: bool,
 
@@ -30,6 +36,14 @@ fn default_fmt() -> bool {
 }
 
 fn default_clippy() -> bool {
+    true
+}
+
+fn default_test() -> bool {
+    true
+}
+
+fn default_nextest() -> bool {
     false
 }
 
@@ -58,6 +72,8 @@ impl Default for RustCIConfig {
         Self {
             fmt: default_fmt(),
             clippy: default_clippy(),
+            test: default_test(),
+            nextest: default_nextest(),
             msrv: default_msrv(),
             msrv_find: default_msrv_find(),
             machete: default_msrv_find(),

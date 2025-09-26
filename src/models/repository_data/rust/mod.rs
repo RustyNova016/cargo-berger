@@ -54,6 +54,15 @@ impl RustData {
             self.cargo.clippy()?;
         }
 
+        if self.rust_conf.ci.test {
+            println!("\n === Running tests ===\n");
+            if self.rust_conf.ci.nextest {
+                self.cargo.nextest_run()?;
+            } else {
+                self.cargo.test()?;
+            }
+        }
+
         if self.rust_conf.ci.semver {
             println!("\n === Running semver check ===\n");
             self.cargo.cargo_machete()?;
@@ -64,7 +73,7 @@ impl RustData {
             self.cargo.cargo_machete()?;
         }
 
-        if self.rust_conf.ci.machete {
+        if self.rust_conf.ci.min_versions {
             println!("\n === Running minimum version check ===\n");
             self.cargo.cargo_min_version()?;
         }
