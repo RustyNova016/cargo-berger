@@ -20,6 +20,9 @@ pub struct RustCIConfig {
 
     #[serde(default = "default_semver")]
     pub semver: bool,
+
+    #[serde(default = "default_min_versions")]
+    pub min_versions: bool,
 }
 
 fn default_fmt() -> bool {
@@ -46,6 +49,10 @@ fn default_semver() -> bool {
     false
 }
 
+fn default_min_versions() -> bool {
+    false
+}
+
 impl Default for RustCIConfig {
     fn default() -> Self {
         Self {
@@ -55,6 +62,7 @@ impl Default for RustCIConfig {
             msrv_find: default_msrv_find(),
             machete: default_msrv_find(),
             semver: default_semver(),
+            min_versions: default_min_versions(),
         }
     }
 }

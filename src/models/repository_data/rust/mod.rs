@@ -64,6 +64,11 @@ impl RustData {
             self.cargo.cargo_machete()?;
         }
 
+        if self.rust_conf.ci.machete {
+            println!("\n === Running minimum version check ===\n");
+            self.cargo.cargo_min_version()?;
+        }
+
         if self.rust_conf.ci.msrv {
             println!("\n === Running msrv check ===\n");
             let res = self.cargo.cargo_msrv_verify();
