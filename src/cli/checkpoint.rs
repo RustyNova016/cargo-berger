@@ -1,6 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Makes a new checkpoint commit. This commit is a savepoint in the development, and will stay in the tree.
@@ -15,7 +16,7 @@ impl CheckpointCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.commit_checkpoint(self.message.as_deref())?;
         }

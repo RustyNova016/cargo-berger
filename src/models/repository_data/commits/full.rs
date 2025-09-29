@@ -1,4 +1,5 @@
 use crate::ColEyre;
+use crate::ColEyreVal;
 use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
@@ -25,5 +26,12 @@ impl RepositoryData {
         }
 
         Ok(())
+    }
+
+    /// Return true if the lastest commit is a full commit
+    pub fn is_latest_commit_full(&self) -> ColEyreVal<bool> {
+        let name = self.repository.get_latest_commit_name()?;
+
+        Ok(!name.starts_with("tmp:") && !name.starts_with("checkpoint:"))
     }
 }

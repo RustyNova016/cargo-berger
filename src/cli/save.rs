@@ -1,6 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Makes a new temporary commit, which will be removed on next commit. Useful if you need to quickly save your work and switch to another branch
@@ -14,7 +15,7 @@ impl SaveCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.commit_tmp(self.message.as_deref())?;
         }

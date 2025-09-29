@@ -1,12 +1,9 @@
-pub mod clone;
 use std::path::PathBuf;
 
 use git2::Repository;
 
-use crate::ColEyreVal;
-
 pub mod basic_git;
-pub mod commit;
+pub mod clone;
 pub mod rebase;
 
 pub struct GitRepo {
@@ -22,9 +19,5 @@ impl GitRepo {
             repo: Repository::open(path.canonicalize().unwrap()).unwrap(),
             default_branch,
         }
-    }
-
-    pub fn is_latest_commit_save(&self) -> ColEyreVal<bool> {
-        Ok(self.get_latest_commit_name()?.starts_with("tmp:"))
     }
 }

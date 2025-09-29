@@ -2,6 +2,7 @@ use clap::Parser;
 use itertools::Itertools as _;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::berger_data::BergerData;
 use crate::models::cli_data::CLI_DATA;
 
@@ -33,7 +34,7 @@ impl RustCICommand {
 
     fn process(berger: &BergerData) -> ColEyre {
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
             let Some(crat) = &repo_data.rust else {
                 continue;

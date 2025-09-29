@@ -1,4 +1,5 @@
 use crate::ColEyre;
+use crate::ColEyreVal;
 use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
@@ -18,10 +19,17 @@ impl RepositoryData {
 
     /// Remove all the previous temporary commits
     pub fn remove_previous_tmps(&self) -> ColEyre {
-        while self.repository.is_latest_commit_save()? {
+        while self.is_latest_commit_tmp()? {
             self.repository.reset_last_commit()?;
         }
 
         Ok(())
+    }
+
+    pub fn is_latest_commit_tmp(&self) -> ColEyreVal<bool> {
+        Ok(self
+            .repository
+            .get_latest_commit_name()?
+            .starts_with("tmp:"))
     }
 }

@@ -1,6 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Create a new feature branch, based on the default branch. This also pull the default branch for new changes, so the new branch is on par with latest
@@ -15,7 +16,7 @@ impl NewFeatCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.commit_tmp(self.message.as_deref().or(Some(&format!(
                 "Switch to new feature branch `{}`",
