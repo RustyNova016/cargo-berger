@@ -65,7 +65,7 @@ impl RustData {
 
         if self.rust_conf.ci.semver {
             println!("\n === Running semver check ===\n");
-            self.cargo.cargo_machete()?;
+            self.cargo.cargo_semver()?;
         }
 
         if self.rust_conf.ci.machete {
