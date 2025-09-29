@@ -6,11 +6,15 @@ use color_eyre::eyre::ContextCompat;
 use color_eyre::eyre::eyre;
 
 use crate::ColEyreVal;
+use crate::models::commands::commander::Commander;
 use crate::models::config::repository_config::RepositoryConfig;
 use crate::models::repository_data::rust::RustData;
 use crate::models::tool_bindings::git::GitRepo;
 
+/// All the commit types and their associated functions
+pub mod commits;
 pub mod git;
+pub mod remotes;
 pub mod rust;
 
 /// The data of a single Berger repo
@@ -23,6 +27,7 @@ pub struct RepositoryData {
     pub conf: RepositoryConfig,
     pub repository: GitRepo,
 
+    // === Language Handlers ===
     pub rust: Option<RustData>,
 }
 
@@ -88,5 +93,9 @@ impl RepositoryData {
 
             rust,
         })
+    }
+
+    pub fn new_command(&self) -> Commander {
+        Commander::new(self.root_folder.to_owned())
     }
 }

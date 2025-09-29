@@ -1,6 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Rebase the current branch on the remote's default branch.
@@ -12,9 +13,9 @@ impl RebaseDefaultCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
-            repo_data.make_tmp_save_commit(Some("Rebasing branch on remote default"))?;
+            repo_data.commit_tmp(Some("Rebasing branch on remote default"))?;
             repo_data.repository.fetch(None, None)?;
             repo_data.repository.rebase_on_remote_default()?;
         }

@@ -1,6 +1,7 @@
 use clap::Parser;
 
 use crate::ColEyre;
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Save the changes and move to another branch.
@@ -18,9 +19,9 @@ impl QuickSwitchCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         for repo_data in berger.repo_data.values() {
-            println!("[ Processing repository `{}`]", repo_data.name);
+            infoln!("Processing repository `{}`", repo_data.name);
 
-            repo_data.make_tmp_save_commit(
+            repo_data.commit_tmp(
                 self.message
                     .as_deref()
                     .or(Some(&format!("Quick switch to branch `{}`", &self.branch))),
