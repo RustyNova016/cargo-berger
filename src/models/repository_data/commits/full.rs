@@ -1,5 +1,6 @@
 use crate::ColEyre;
 use crate::ColEyreVal;
+use crate::infoln;
 use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
@@ -10,8 +11,14 @@ impl RepositoryData {
 
         self.remove_previous_tmps()?;
 
+        // If there's nothing since last checkpoint, we overwrite the checkpoint
+        if !self.repository.is_dirty()? && self.is_latest_commit_checkpoint()? {
+            self.repository.reset_last_commit()?;
+        }
+
+        // If there's truly nothing, then skip commit
         if !self.repository.is_dirty()? {
-            println!("[ Repository `{}` is clean. Skipping commit]", self.name)
+            infoln!("Repository `{}` is clean. Skipping full commit", self.name)
         }
 
         self.repository.add_all_files();

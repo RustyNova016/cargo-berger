@@ -1,5 +1,6 @@
 use crate::ColEyre;
 use crate::ColEyreVal;
+use crate::infoln;
 use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
@@ -7,7 +8,7 @@ impl RepositoryData {
         self.remove_previous_tmps()?;
 
         if !self.repository.is_dirty()? {
-            println!("[ Repository `{}` is clean. Skipping commit]", self.name)
+            infoln!("Repository `{}` is clean. Skipping tmp commit", self.name)
         }
 
         self.repository.add_all_files();
