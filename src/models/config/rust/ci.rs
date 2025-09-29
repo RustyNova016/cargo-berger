@@ -6,6 +6,9 @@ pub struct RustCIConfig {
     #[serde(default = "default_fmt")]
     pub fmt: bool,
 
+    #[serde(default = "default_doc")]
+    pub doc: bool,
+
     #[serde(default = "default_clippy")]
     pub clippy: bool,
 
@@ -32,6 +35,10 @@ pub struct RustCIConfig {
 }
 
 fn default_fmt() -> bool {
+    true
+}
+
+fn default_doc() -> bool {
     true
 }
 
@@ -71,6 +78,7 @@ impl Default for RustCIConfig {
     fn default() -> Self {
         Self {
             fmt: default_fmt(),
+            doc: default_doc(),
             clippy: default_clippy(),
             test: default_test(),
             nextest: default_nextest(),

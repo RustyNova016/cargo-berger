@@ -49,6 +49,11 @@ impl RustData {
             self.cargo.fmt_check()?;
         }
 
+        if self.rust_conf.ci.doc {
+            println!("\n === Running documentation check ===\n");
+            self.cargo.fmt_check()?;
+        }
+
         if self.rust_conf.ci.clippy {
             println!("\n === Running clippy check ===\n");
             self.cargo.clippy()?;
@@ -65,7 +70,7 @@ impl RustData {
 
         if self.rust_conf.ci.semver {
             println!("\n === Running semver check ===\n");
-            self.cargo.cargo_machete()?;
+            self.cargo.cargo_semver()?;
         }
 
         if self.rust_conf.ci.machete {
