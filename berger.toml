@@ -1,0 +1,18 @@
+[repository.cargo-berger]
+path="./"
+default_branch="master"
+
+    [repository.cargo-berger.rust]
+    fmt = true
+    clippy_hack = true
+    sqlx = false
+
+    [repository.cargo-berger.rust.ci]
+    fmt = true
+    clippy = true
+    test = true
+    nextest = false
+    msrv = true
+    machete = true
+    semver = false
+    # min_versions = true
