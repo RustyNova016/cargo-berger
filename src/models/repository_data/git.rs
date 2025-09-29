@@ -63,4 +63,13 @@ impl RepositoryData {
 
         Ok(())
     }
+
+    /// Remove all the previous temporary commits
+    pub fn remove_previous_tmps(&self) -> ColEyre {
+        while self.repository.is_latest_commit_save()? {
+            self.repository.reset_last_commit()?;
+        }
+
+        Ok(())
+    }
 }

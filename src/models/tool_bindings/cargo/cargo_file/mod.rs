@@ -10,8 +10,10 @@ use toml_edit::DocumentMut;
 use crate::ColEyre;
 use crate::ColEyreVal;
 
+pub mod package;
 pub mod patch;
 pub mod workspace;
+
 
 pub struct CargoFile {
     file_path: PathBuf,
@@ -81,3 +83,4 @@ impl CargoFile {
         doc.contains_key("workspace")
     }
 }
+

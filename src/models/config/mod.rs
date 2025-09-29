@@ -8,10 +8,12 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::ColEyreVal;
-use crate::models::config::repository_config::RepositoryConfig;
+use crate::models::config::repository::RepositoryConfig;
 
+pub mod repository;
 pub mod repository_config;
 pub mod rust;
+
 
 /// Configuration root
 #[derive(Debug, Serialize, Deserialize)]
@@ -58,3 +60,4 @@ impl BergerConfig {
 fn default_auto_init() -> bool {
     true
 }
+

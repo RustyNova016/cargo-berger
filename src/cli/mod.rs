@@ -1,5 +1,3 @@
-pub mod init;
-pub mod rust;
 use clap::Parser;
 use clap::Subcommand;
 
@@ -19,13 +17,17 @@ use crate::models::cli_data::CLI_DATA;
 
 pub mod checkpoint;
 pub mod full;
+pub mod init;
 pub mod new_feat;
 pub mod pr;
 pub mod pull;
 pub mod push;
 pub mod quick_switch;
+pub mod release;
+pub mod rust;
 pub mod save;
 pub mod update_branch;
+
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]
@@ -124,3 +126,4 @@ impl Commands {
         Ok(())
     }
 }
+

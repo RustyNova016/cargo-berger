@@ -5,13 +5,20 @@ use color_eyre::eyre::Context;
 use color_eyre::eyre::ContextCompat;
 use color_eyre::eyre::eyre;
 
+use crate::models::shell_commands::git::Git;
+use crate::models::shell_commands::shell::Shell;
 use crate::ColEyreVal;
-use crate::models::config::repository_config::RepositoryConfig;
+use crate::models::config::repository::RepositoryConfig;
 use crate::models::repository_data::rust::RustData;
 use crate::models::tool_bindings::git::GitRepo;
 
+/// All the commit types and their associated functions
+pub mod commits;
 pub mod git;
+pub mod release;
 pub mod rust;
+
+
 
 /// The data of a single Berger repo
 pub struct RepositoryData {
@@ -89,4 +96,14 @@ impl RepositoryData {
             rust,
         })
     }
+
+    pub fn get_shell(&self) -> Shell {
+        Shell::new(self.root_folder.clone())
+    }
+
+    pub fn get_git_shell(&self) -> Git {
+        Git::new(self.get_shell())
+    }
 }
+
+
