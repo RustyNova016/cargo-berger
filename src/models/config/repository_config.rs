@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::models::config::ci::CIConfig;
 use crate::models::config::rust::RustConfig;
 
 /// Configuration for a repository in the herd
@@ -16,6 +17,10 @@ pub struct RepositoryConfig {
     #[serde(default = "default_branch")]
     pub default_branch: String,
 
+    // Actions
+    #[serde(default)]
+    pub ci: CIConfig,
+
     // Languages
     pub rust: Option<RustConfig>,
 }
@@ -27,6 +32,7 @@ impl RepositoryConfig {
             remote_url: None,
             default_branch: default_branch(),
             default_remote: default_remote(),
+            ci: Default::default(),
             rust: None,
         }
     }

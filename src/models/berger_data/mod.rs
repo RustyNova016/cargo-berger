@@ -55,7 +55,7 @@ impl BergerData {
             let repo = if conf.auto_init {
                 RepositoryData::initialize_repo(name.clone(), crate_conf, &workspace_root)?
             } else {
-                RepositoryData::open_repo(name.clone(), crate_conf)?
+                RepositoryData::load(name.clone(), crate_conf)?
             };
 
             data.insert(name.clone(), repo);
