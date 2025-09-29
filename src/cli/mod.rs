@@ -102,6 +102,7 @@ pub enum Commands {
     #[clap(aliases = &["rebase_default", "refresh_branch", "refresh-branch"])]
     RebaseDefault(RebaseDefaultCommand),
     Rust(RustCommand),
+    #[clap(alias = "tmp")]
     Save(SaveCommand),
 }
 

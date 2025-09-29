@@ -17,7 +17,7 @@ impl FullCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data.make_full_commit(&self.message)?;
+            repo_data.commit_full(&self.message)?;
         }
 
         Ok(())

@@ -20,7 +20,7 @@ impl QuickSwitchCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data.make_tmp_save_commit(
+            repo_data.commit_tmp(
                 self.message
                     .as_deref()
                     .or(Some(&format!("Quick switch to branch `{}`", &self.branch))),

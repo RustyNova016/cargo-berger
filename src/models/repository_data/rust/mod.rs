@@ -24,7 +24,7 @@ impl RustData {
         })
     }
 
-    pub fn precommit_actions(&self) -> ColEyre {
+    pub fn pre_full_commit(&self) -> ColEyre {
         if self.rust_conf.fmt {
             println!("\n === Running Formater ===\n");
             self.cargo.fmt()?;

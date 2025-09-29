@@ -16,9 +16,7 @@ impl SaveCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data
-                .repository
-                .make_tmp_save_commit(self.message.as_deref())?;
+            repo_data.commit_tmp(self.message.as_deref())?;
         }
 
         Ok(())

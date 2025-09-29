@@ -17,7 +17,7 @@ impl NewFeatCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data.make_tmp_save_commit(self.message.as_deref().or(Some(&format!(
+            repo_data.commit_tmp(self.message.as_deref().or(Some(&format!(
                 "Switch to new feature branch `{}`",
                 &self.branch
             ))))?;

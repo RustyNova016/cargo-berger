@@ -10,6 +10,8 @@ use crate::models::config::repository_config::RepositoryConfig;
 use crate::models::repository_data::rust::RustData;
 use crate::models::tool_bindings::git::GitRepo;
 
+/// All the commit types and their associated functions
+pub mod commits;
 pub mod git;
 pub mod rust;
 

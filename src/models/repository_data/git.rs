@@ -15,31 +15,6 @@ impl RepositoryData {
         Ok(())
     }
 
-    pub fn make_checkpoint_commit(&self, message: Option<&str>) -> ColEyre {
-        if let CommitResult::CleanTree = self.repository.make_checkpoint_commit(message)? {
-            println!("[ Repository `{}` is clean. Skipping commit]", self.name)
-        };
-
-        Ok(())
-    }
-
-    pub fn make_full_commit(&self, message: &str) -> ColEyre {
-        if (!self.repository.is_dirty()?) && !self.repository.is_latest_commit_save()? {
-            println!("[ Repository `{}` is clean. Skipping commit]", self.name);
-            return Ok(());
-        }
-
-        self.make_tmp_save_commit(Some(&format!("Before full commit `{}`", message)))?;
-
-        if let Some(rust) = &self.rust {
-            rust.precommit_actions()?;
-        }
-
-        println!("\n === Creating commit ===\n");
-        self.repository.make_full_commit(message)?;
-        Ok(())
-    }
-
     pub fn switch_to_default(&self) -> ColEyre {
         self.repository.switch_branch(&self.conf.default_branch)?;
         self.repository.pull_branch()

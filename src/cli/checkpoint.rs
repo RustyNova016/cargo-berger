@@ -17,9 +17,7 @@ impl CheckpointCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data
-                .repository
-                .make_checkpoint_commit(self.message.as_deref())?;
+            repo_data.commit_checkpoint(self.message.as_deref())?;
         }
 
         Ok(())

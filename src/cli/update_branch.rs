@@ -14,7 +14,7 @@ impl RebaseDefaultCommand {
         for repo_data in berger.repo_data.values() {
             println!("[ Processing repository `{}`]", repo_data.name);
 
-            repo_data.make_tmp_save_commit(Some("Rebasing branch on remote default"))?;
+            repo_data.commit_tmp(Some("Rebasing branch on remote default"))?;
             repo_data.repository.fetch(None, None)?;
             repo_data.repository.rebase_on_remote_default()?;
         }
