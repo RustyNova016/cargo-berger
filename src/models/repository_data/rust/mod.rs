@@ -49,6 +49,11 @@ impl RustData {
             self.cargo.fmt_check()?;
         }
 
+        if self.rust_conf.ci.doc {
+            println!("\n === Running documentation check ===\n");
+            self.cargo.fmt_check()?;
+        }
+
         if self.rust_conf.ci.clippy {
             println!("\n === Running clippy check ===\n");
             self.cargo.clippy()?;

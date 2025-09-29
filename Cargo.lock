@@ -94,12 +94,10 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "clap-markdown",
- "clap_complete",
  "color-eyre",
  "git2",
  "itertools",
  "serde",
- "snafu",
  "toml",
  "toml_edit",
 ]
@@ -154,15 +152,6 @@ dependencies = [
  "terminal_size",
  "unicase",
  "unicode-width",
-]
-
-[[package]]
-name = "clap_complete"
-version = "4.5.57"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d9501bd3f5f09f7bbee01da9a511073ed30a80cd7a509f1214bb74eadea71ad"
-dependencies = [
- "clap",
 ]
 
 [[package]]
@@ -733,27 +722,6 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
-
-[[package]]
-name = "snafu"
-version = "0.8.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e84b3f4eacbf3a1ce05eac6763b4d629d60cbc94d632e4092c54ade71f1e1a2"
-dependencies = [
- "snafu-derive",
-]
-
-[[package]]
-name = "snafu-derive"
-version = "0.8.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1c97747dbf44bb1ca44a561ece23508e99cb592e862f22222dcf42f51d1e451"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "stable_deref_trait"
