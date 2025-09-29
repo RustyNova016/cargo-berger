@@ -8,11 +8,12 @@ use crate::models::cli_data::CLI_DATA;
 
 /// Run the CI for the berger workspace.
 ///
+/// # Rust
 /// This will deactivate the rust workspace, run the designated commands for each crate invidually, then reactivate the workspace.
 #[derive(Parser, Debug, Clone)]
-pub struct RustCICommand;
+pub struct CICommand;
 
-impl RustCICommand {
+impl CICommand {
     pub fn run(&self) -> crate::ColEyre {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
@@ -36,11 +37,9 @@ impl RustCICommand {
         for repo_data in berger.repo_data.values() {
             infoln!("Processing repository `{}`", repo_data.name);
 
-            let Some(crat) = &repo_data.rust else {
-                continue;
-            };
-
-            crat.run_ci()?;
+            if !repo_data.run_ci()? {
+                return Ok(());
+            }
         }
 
         Ok(())

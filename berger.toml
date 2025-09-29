@@ -7,7 +7,10 @@ default_branch="master"
     clippy_hack = true
     sqlx = false
 
-    [repository.cargo-berger.rust.ci]
+    [repository.cargo-berger.ci]
+    full_commits = true
+
+    [repository.cargo-berger.ci.rust]
     fmt = true
     doc = true
     clippy = true

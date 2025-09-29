@@ -12,6 +12,7 @@ use crate::models::repository_data::rust::RustData;
 use crate::models::tool_bindings::git::GitRepo;
 
 /// All the commit types and their associated functions
+pub mod ci;
 pub mod commits;
 pub mod git;
 pub mod remotes;
@@ -43,7 +44,7 @@ impl RepositoryData {
         let rust = conf
             .rust
             .clone()
-            .map(|conf| RustData::load(&path, conf))
+            .map(|rust_conf| RustData::load(&path, rust_conf, conf.ci.rust_ci.to_owned()))
             .transpose()?;
 
         Ok(Self {
@@ -70,29 +71,6 @@ impl RepositoryData {
 
     pub fn get_directory(&self) -> &Path {
         &self.root_folder
-    }
-
-    pub fn open_repo(name: String, conf: RepositoryConfig) -> ColEyreVal<Self> {
-        let path = PathBuf::from(conf.path.clone())
-            .canonicalize()
-            .context(eyre!("Couldn't find folder: `{}`", conf.path.clone()))?;
-
-        let repository = GitRepo::new(path.clone(), conf.default_branch.clone());
-
-        let rust = conf
-            .rust
-            .clone()
-            .map(|conf| RustData::load(&path, conf))
-            .transpose()?;
-
-        Ok(Self {
-            name,
-            root_folder: path,
-            conf,
-            repository,
-
-            rust,
-        })
     }
 
     pub fn new_command(&self) -> Commander {

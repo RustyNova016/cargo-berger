@@ -1,10 +1,21 @@
+pub mod checkpoint;
+pub mod ci;
+pub mod full;
 pub mod init;
+pub mod new_feat;
+pub mod pr;
+pub mod pull;
+pub mod push;
+pub mod quick_switch;
 pub mod rust;
+pub mod save;
+pub mod update_branch;
 use clap::Parser;
 use clap::Subcommand;
 
 use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
+use crate::cli::ci::CICommand;
 use crate::cli::full::FullCommand;
 use crate::cli::init::InitCommand;
 use crate::cli::new_feat::NewFeatCommand;
@@ -16,16 +27,6 @@ use crate::cli::rust::RustCommand;
 use crate::cli::save::SaveCommand;
 use crate::cli::update_branch::RebaseDefaultCommand;
 use crate::models::cli_data::CLI_DATA;
-
-pub mod checkpoint;
-pub mod full;
-pub mod new_feat;
-pub mod pr;
-pub mod pull;
-pub mod push;
-pub mod quick_switch;
-pub mod save;
-pub mod update_branch;
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]
@@ -90,6 +91,7 @@ impl Cli {
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
     Checkpoint(CheckpointCommand),
+    Ci(CICommand),
     Full(FullCommand),
     Init(InitCommand),
     #[clap(alias = "new_feat")]
@@ -110,6 +112,7 @@ impl Commands {
     pub fn run(&self) -> crate::ColEyre {
         match self {
             Self::Checkpoint(val) => val.run()?,
+            Self::Ci(val) => val.run()?,
             Self::Full(val) => val.run()?,
             Self::Init(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,
