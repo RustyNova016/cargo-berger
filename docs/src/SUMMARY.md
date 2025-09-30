@@ -6,6 +6,7 @@
 - [Jumping branches](./jumping_branches.md)
 - [Git the changes](./getting_changes.md)
 - [Push the changes](./pushing_changes.md)
+- [Release the kraken (code)](./releases.md)
 
 ## Rust
 
