@@ -18,14 +18,13 @@ impl NewFeatCommand {
         for repo_data in berger.repo_data.values() {
             infoln!("Processing repository `{}`", repo_data.name);
 
-            repo_data.commit_tmp(self.message.as_deref().or(Some(&format!(
-                "Switch to new feature branch `{}`",
-                &self.branch
-            ))))?;
-
-            repo_data.switch_to_default()?;
-
-            repo_data.repository.switch_branch_or_create(&self.branch)?;
+            repo_data.new_feat_branch(
+                &self.branch,
+                self.message.as_deref().or(Some(&format!(
+                    "Switch to new feature branch `{}`",
+                    &self.branch
+                ))),
+            )?;
         }
 
         Ok(())

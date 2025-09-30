@@ -1,8 +1,8 @@
 use std::process::Stdio;
 
-use color_eyre::eyre::eyre;
-
 use crate::ColEyre;
+use crate::errorln;
+use crate::models::ext::exit_status::ExitStatusExt;
 use crate::models::tool_bindings::cargo::Cargo;
 use crate::utils::cmd::assert_status;
 
@@ -32,14 +32,10 @@ impl Cargo {
             .arg("warnings")
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
-            .env("SQLX_OFFLINE", "true");
+            .env("SQLX_OFFLINE", "true")
+            .status()?
+            .exit_on_non_zero_with(|| errorln!("Error while validating rust code"));
 
-        let output = cmd.output()?;
-        if output.status.success() {
-            Ok(())
-        } else {
-            let error = String::from_utf8_lossy(&output.stderr);
-            Err(eyre!("Error while validating rust code: {}", error))
-        }
+        Ok(())
     }
 }

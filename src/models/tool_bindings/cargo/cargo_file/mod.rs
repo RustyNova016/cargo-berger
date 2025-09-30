@@ -10,6 +10,7 @@ use toml_edit::DocumentMut;
 use crate::ColEyre;
 use crate::ColEyreVal;
 
+pub mod package;
 pub mod patch;
 pub mod workspace;
 

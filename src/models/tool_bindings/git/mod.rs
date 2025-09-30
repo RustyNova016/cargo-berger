@@ -5,6 +5,7 @@ use git2::Repository;
 pub mod basic_git;
 pub mod clone;
 pub mod rebase;
+pub mod tag;
 
 pub struct GitRepo {
     path: PathBuf,

@@ -2,7 +2,7 @@
 
 Cargo berger offers "types" of commits to allow easier management of the advancement of a feature
 
-## Saves
+## TMP / Saves
 
 Save commits are temporary commits. They don't hold any guaranty. They are used to clean the git tree, allowing for some commands to be run more safely, switching to other branches, etc...
 

@@ -21,13 +21,7 @@ impl QuickSwitchCommand {
         for repo_data in berger.repo_data.values() {
             infoln!("Processing repository `{}`", repo_data.name);
 
-            repo_data.commit_tmp(
-                self.message
-                    .as_deref()
-                    .or(Some(&format!("Quick switch to branch `{}`", &self.branch))),
-            )?;
-
-            repo_data.repository.switch_branch(&self.branch)?;
+            repo_data.quick_switch_branch(&self.branch, None)?;
         }
 
         Ok(())

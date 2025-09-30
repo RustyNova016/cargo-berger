@@ -36,3 +36,9 @@ path="./"
 ```
 
 You'll still be able to run some commands, but others may require a config file
+
+## Language configuration
+
+### Rust
+
+You can see the rust configuration [here](./rust/getting_started.md)

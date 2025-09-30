@@ -11,4 +11,14 @@ pub impl ExitStatus {
             exit(self.code().unwrap_or(1))
         }
     }
+
+    fn exit_on_non_zero_with<F>(&self, f: F)
+    where
+        F: FnOnce(),
+    {
+        if !self.success() {
+            f();
+            exit(self.code().unwrap_or(1))
+        }
+    }
 }
