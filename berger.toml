@@ -2,6 +2,9 @@
 path="./"
 default_branch="master"
 
+    [repository.cargo-berger.release]
+    git_cliff = true
+
     [repository.cargo-berger.rust]
     fmt = true
     clippy_hack = true

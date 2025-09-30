@@ -6,6 +6,10 @@ use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
     pub fn pre_release(&self, version: &str) -> ColEyre {
+        if self.conf.release.git_cliff {
+            self.new_command().git_cliff().generate_changelog(version)?;
+        }
+
         if let Some(rust) = &self.rust {
             rust.pre_release(version)?;
         }

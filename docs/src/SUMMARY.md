@@ -15,5 +15,3 @@
 ## Config file reference
 
 - [Root](./reference/root.md)
-- [Repository](./reference/repository.md)
-- [Rust Config](./reference/rust.md)

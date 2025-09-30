@@ -10,6 +10,7 @@ use serde::Serialize;
 use crate::ColEyreVal;
 use crate::models::config::repository_config::RepositoryConfig;
 
+pub mod release;
 pub mod repository_config;
 pub mod rust;
 
