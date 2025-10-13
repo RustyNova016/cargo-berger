@@ -28,18 +28,6 @@ pub struct BergerData {
 }
 
 impl BergerData {
-    pub fn load(config_file: PathBuf) -> ColEyreVal<Self> {
-        let conf = BergerConfig::load(&config_file)?;
-
-        let workspace_root = config_file
-            .canonicalize()?
-            .parent()
-            .expect("Can't load a directory as a berger file")
-            .to_path_buf();
-
-        Self::from_berger_config(workspace_root, conf)
-    }
-
     /// Use the current folder as the only repo available. Used in case there's no berger file
     pub fn use_current() -> ColEyreVal<Self> {
         Self::from_berger_config(current_dir()?, BergerConfig::use_current()?)

@@ -9,7 +9,7 @@ use crate::models::config::rust::RustConfig;
 use crate::utils::traits::merge_data::OverwriteMergeData;
 
 /// Configuration for a repository in the herd
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RepositoryConfig {
     pub path: String,
 
@@ -54,19 +54,22 @@ impl RepositoryConfig {
         wp_root.join(&self.path)
     }
 
-    pub fn berger_file_path(&self) -> PathBuf {
-        match &self.berger_file_path {
-            Some(path) => PathBuf::from(path),
-            None => self.path(),
-        }
+    pub fn berger_file_path(&self) -> Option<PathBuf> {
+        self.berger_file_path.as_ref().map(PathBuf::from)
     }
 }
 
 impl OverwriteMergeData for RepositoryConfig {
     fn merge_data_mut(&mut self, other: Self) {
+        self.path.merge_data_mut(other.path);
+
+        self.inherit.merge_data_mut(other.inherit);
+        self.berger_file_path.merge_data_mut(other.berger_file_path);
+
         self.remote_url.merge_data_mut(other.remote_url);
         self.default_remote.merge_data_mut(other.default_remote);
         self.default_branch.merge_data_mut(other.default_branch);
+
         self.release.merge_data_mut(other.release);
         self.rust.merge_data_mut(other.rust);
     }

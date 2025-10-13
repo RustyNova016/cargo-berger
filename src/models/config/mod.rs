@@ -1,17 +1,14 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::Read as _;
-use std::path::Path;
+use std::path::PathBuf;
 
-use color_eyre::eyre::Context as _;
+use color_eyre::eyre::Ok;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::config::repository_config::RepositoryConfig;
-use crate::utils::traits::merge_data::OverwriteMergeData;
 
+pub mod load;
 pub mod release;
 pub mod repository_config;
 pub mod rust;
@@ -31,40 +28,12 @@ pub struct BergerConfig {
 
     #[serde(default = "default_auto_init")]
     pub auto_init: bool,
+
+    #[serde(skip_deserializing)]
+    pub from_path: PathBuf,
 }
 
 impl BergerConfig {
-    pub fn load(path: &Path) -> ColEyreVal<Self> {
-        let mut config = File::open(path)
-            .context("Couldn't open the berger config file. Make sure it exists")?;
-        let mut data = String::new();
-        config
-            .read_to_string(&mut data)
-            .context("Couldn't read the autosort config file")?;
-        toml::from_str(&data).context("Couldn't parse the berger config file")
-    }
-
-    /// Load all the inherited repos
-    pub fn load_inherited(&mut self) -> ColEyre {
-        for (name, repo) in self.repositories.iter_mut() {
-            if !repo.inherit {
-                continue;
-            }
-
-            let config_path = repo.berger_file_path();
-            if !config_path.exists() {
-                continue;
-            }
-
-            let mut new_conf = Self::load(&config_path)?;
-            if let Some(new_repo) = new_conf.repositories.remove(name) {
-                repo.merge_data_mut(new_repo)
-            }
-        }
-
-        Ok(())
-    }
-
     /// Use the current folder as the only repo available. Used in case there's no berger file
     pub fn use_current() -> ColEyreVal<Self> {
         let repo_conf = RepositoryConfig::new("./".to_string());
@@ -75,6 +44,7 @@ impl BergerConfig {
         Ok(BergerConfig {
             repositories: repos,
             auto_init: false,
+            from_path: PathBuf::from("./"),
         })
     }
 }
