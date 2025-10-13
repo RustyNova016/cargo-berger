@@ -2,7 +2,6 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use color_eyre::eyre::Context;
-use color_eyre::eyre::ContextCompat;
 use color_eyre::eyre::eyre;
 
 use crate::ColEyreVal;
@@ -35,10 +34,12 @@ pub struct RepositoryData {
 
 impl RepositoryData {
     /// Load an existing repo
-    pub fn load(name: String, conf: RepositoryConfig) -> ColEyreVal<Self> {
-        let path = PathBuf::from(conf.path.clone())
-            .canonicalize()
-            .context(eyre!("Couldn't find folder: `{}`", conf.path.clone()))?;
+    pub fn load(name: String, conf: RepositoryConfig, wp_root: &Path) -> ColEyreVal<Self> {
+        let path = conf.full_path(wp_root);
+
+        if !path.exists() {
+            return Err(eyre!("Couldn't find path: {}", path.display()));
+        }
 
         let repository = GitRepo::new(path.clone(), conf.default_branch.clone());
 
@@ -60,14 +61,26 @@ impl RepositoryData {
 
     /// Initialize and load the repo. It won't do anything if the repository is already initialized,
     /// so it shouldn't break anything over just loading the repo
-    pub fn initialize_repo(name: String, conf: RepositoryConfig, root: &Path) -> ColEyreVal<Self> {
+    pub fn initialize_repo(
+        name: String,
+        conf: RepositoryConfig,
+        wp_root: &Path,
+    ) -> ColEyreVal<Self> {
         // Check if don't have the repo cloned yet
-        if !PathBuf::from(conf.path.clone()).exists() {
-            let url = conf.remote_url.clone().context(eyre!("[`{name}`] Couldn't clone repository: remote_url is missing in the configuration file"))?;
-            GitRepo::clone(root, &url, Some(&name))?
+        if !conf.full_path(wp_root).exists() {
+            match conf.remote_url.clone() {
+                Some(remote) => GitRepo::clone(wp_root, &remote, Some(&name))?,
+                None => {
+                    panic!(
+                        "Error while initialising [`{name}`]:\n
+                    Folder `{}` doesn't exists, but not `remote_url` has been configurated",
+                        conf.full_path(wp_root).display()
+                    )
+                }
+            }
         }
 
-        Self::load(name, conf)
+        Self::load(name, conf, wp_root)
     }
 
     pub fn get_directory(&self) -> &Path {

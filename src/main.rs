@@ -7,7 +7,7 @@ pub mod models;
 pub mod utils;
 
 pub(crate) type ColEyreVal<T> = color_eyre::Result<T>;
-pub(crate) type ColEyre = color_eyre::Result<()>;
+pub(crate) type ColEyre<T = ()> = color_eyre::Result<T>;
 
 fn main() -> ColEyre {
     color_eyre::install()?;
