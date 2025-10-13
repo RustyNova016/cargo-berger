@@ -17,7 +17,7 @@ pub struct RepositoryConfig {
     pub default_branch: String,
 
     // Release settings
-    pub release: ReleaseConfig,
+    pub release: Option<ReleaseConfig>,
 
     // Languages
     pub rust: Option<RustConfig>,

@@ -8,6 +8,7 @@ use git2::Status;
 
 use crate::ColEyre;
 use crate::ColEyreVal;
+use crate::infoln;
 use crate::models::tool_bindings::git::GitRepo;
 use crate::utils::cmd::assert_status;
 use crate::utils::cmd::unwrap_status;
@@ -101,6 +102,7 @@ impl GitRepo {
     }
 
     pub fn pull_branch(&self) -> ColEyre {
+        infoln!("Pulling current branch");
         unwrap_status(self.get_base_command().arg("pull").output()?)
     }
 
