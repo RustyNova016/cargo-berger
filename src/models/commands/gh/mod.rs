@@ -4,6 +4,7 @@ use crate::ColEyre;
 use crate::models::commands::commander::Commander;
 use crate::models::ext::exit_status::ExitStatusExt as _;
 
+pub mod issue;
 pub struct GH {
     command: Commander,
 }

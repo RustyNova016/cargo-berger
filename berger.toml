@@ -1,6 +1,7 @@
 [repository.cargo-berger]
 path="./"
 default_branch="master"
+remote_url="https://github.com/RustyNova016/cargo-berger"
 
     [repository.cargo-berger.release]
     git_cliff = true

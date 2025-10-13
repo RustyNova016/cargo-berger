@@ -14,6 +14,7 @@ use crate::models::tool_bindings::git::GitRepo;
 pub mod branches;
 pub mod commits;
 pub mod git;
+pub mod issues;
 pub mod release;
 pub mod remotes;
 pub mod rust;

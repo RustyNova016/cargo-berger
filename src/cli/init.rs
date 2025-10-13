@@ -1,5 +1,6 @@
 use clap::Parser;
 
+use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
 /// Initialise the folder using the data from the berger file. This needs to be rerun every major changes in the `berger.toml` file
@@ -15,7 +16,7 @@ impl InitCommand {
 
         let _berger = data.get_berger_data()?;
 
-        println!("cargo-berger was successfully initialized!");
+        infoln!("cargo-berger was successfully initialized!");
 
         Ok(())
     }

@@ -1,3 +1,5 @@
+use core::fmt::Debug;
+
 /// Merge the data between two structs.
 ///
 /// This overwrites existing fields, but not optional fields
@@ -27,7 +29,7 @@ impl OverwriteMergeData for String {
 
 impl<T> OverwriteMergeData for Option<T>
 where
-    T: OverwriteMergeData,
+    T: OverwriteMergeData + Debug,
 {
     #[inline]
     fn merge_data_mut(&mut self, other: Self) {
