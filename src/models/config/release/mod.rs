@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::utils::traits::merge_data::OverwriteMergeData;
+
 /// Configuration for a repository in the herd
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ReleaseConfig {
@@ -13,6 +15,12 @@ impl Default for ReleaseConfig {
         Self {
             git_cliff: default_git_cliff(),
         }
+    }
+}
+
+impl OverwriteMergeData for ReleaseConfig {
+    fn merge_data_mut(&mut self, other: Self) {
+        self.git_cliff.merge_data_mut(other.git_cliff);
     }
 }
 

@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::utils::traits::merge_data::OverwriteMergeData;
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RustCIConfig {
     #[serde(default = "default_fmt")]
@@ -88,5 +90,20 @@ impl Default for RustCIConfig {
             semver: default_semver(),
             min_versions: default_min_versions(),
         }
+    }
+}
+
+impl OverwriteMergeData for RustCIConfig {
+    fn merge_data_mut(&mut self, other: Self) {
+        self.fmt.merge_data_mut(other.fmt);
+        self.doc.merge_data_mut(other.doc);
+        self.clippy.merge_data_mut(other.clippy);
+        self.test.merge_data_mut(other.test);
+        self.nextest.merge_data_mut(other.nextest);
+        self.msrv.merge_data_mut(other.msrv);
+        self.msrv_find.merge_data_mut(other.msrv_find);
+        self.machete.merge_data_mut(other.msrv_find);
+        self.semver.merge_data_mut(other.msrv_find);
+        self.min_versions.merge_data_mut(other.msrv_find);
     }
 }

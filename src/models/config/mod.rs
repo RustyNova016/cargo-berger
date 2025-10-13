@@ -7,8 +7,10 @@ use color_eyre::eyre::Context as _;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::config::repository_config::RepositoryConfig;
+use crate::utils::traits::merge_data::OverwriteMergeData;
 
 pub mod release;
 pub mod repository_config;
@@ -40,6 +42,27 @@ impl BergerConfig {
             .read_to_string(&mut data)
             .context("Couldn't read the autosort config file")?;
         toml::from_str(&data).context("Couldn't parse the berger config file")
+    }
+
+    /// Load all the inherited repos
+    pub fn load_inherited(&mut self) -> ColEyre {
+        for (name, repo) in self.repositories.iter_mut() {
+            if !repo.inherit {
+                continue;
+            }
+
+            let config_path = repo.berger_file_path();
+            if !config_path.exists() {
+                continue;
+            }
+
+            let mut new_conf = Self::load(&config_path)?;
+            if let Some(new_repo) = new_conf.repositories.remove(name) {
+                repo.merge_data_mut(new_repo)
+            }
+        }
+
+        Ok(())
     }
 
     /// Use the current folder as the only repo available. Used in case there's no berger file
