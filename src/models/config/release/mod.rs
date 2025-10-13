@@ -4,7 +4,7 @@ use serde::Serialize;
 use crate::utils::traits::merge_data::OverwriteMergeData;
 
 /// Configuration for a repository in the herd
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ReleaseConfig {
     #[serde(default = "default_git_cliff")]
     pub git_cliff: bool,
