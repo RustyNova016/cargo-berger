@@ -6,7 +6,7 @@ use crate::models::repository_data::RepositoryData;
 
 impl RepositoryData {
     pub fn pre_release(&self, version: &str) -> ColEyre {
-        if self.conf.release.git_cliff {
+        if self.conf.release.as_ref().is_some_and(|r| r.git_cliff) {
             self.new_command().git_cliff().generate_changelog(version)?;
         }
 
