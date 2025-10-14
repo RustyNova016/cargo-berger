@@ -1,4 +1,5 @@
 pub mod checkpoint;
+pub mod fix_issue;
 pub mod full;
 pub mod init;
 pub mod new_feat;
@@ -10,11 +11,13 @@ pub mod release;
 pub mod rust;
 pub mod save;
 pub mod update_branch;
+
 use clap::Parser;
 use clap::Subcommand;
 
 use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
+use crate::cli::fix_issue::FixIssueCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::init::InitCommand;
 use crate::cli::new_feat::NewFeatCommand;
@@ -91,6 +94,8 @@ impl Cli {
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
     Checkpoint(CheckpointCommand),
+    #[clap(aliases = &["fix_issue", "close-issue", "close_issue"])]
+    FixIssue(FixIssueCommand),
     Full(FullCommand),
     Init(InitCommand),
     #[clap(alias = "new_feat")]
@@ -112,6 +117,7 @@ impl Commands {
     pub fn run(&self) -> crate::ColEyre {
         match self {
             Self::Checkpoint(val) => val.run()?,
+            Self::FixIssue(val) => val.run()?,
             Self::Full(val) => val.run()?,
             Self::Init(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,

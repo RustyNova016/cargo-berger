@@ -2,9 +2,11 @@ use core::cell::OnceCell;
 use std::collections::HashMap;
 use std::env::current_dir;
 use std::path::PathBuf;
+use std::process::exit;
 use std::rc::Rc;
 
 use crate::ColEyreVal;
+use crate::errorln;
 use crate::models::berger_data::rust_workspace::RustWorkspace;
 use crate::models::config::BergerConfig;
 use crate::models::repository_data::RepositoryData;
@@ -69,5 +71,15 @@ impl BergerData {
         };
 
         Ok(Some(self.rust_workspace.get_or_init(|| rust)))
+    }
+
+    pub fn get_repository_or_exit(&self, repo: &str) -> &RepositoryData {
+        match self.repo_data.get(repo) {
+            Some(val) => val,
+            None => {
+                errorln!("Couldn't find repository `{repo}` in the workspace");
+                exit(1);
+            }
+        }
     }
 }
