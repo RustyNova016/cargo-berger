@@ -1,17 +1,3 @@
-pub mod checkpoint;
-pub mod fix_issue;
-pub mod full;
-pub mod init;
-pub mod new_feat;
-pub mod pr;
-pub mod pull;
-pub mod push;
-pub mod quick_switch;
-pub mod release;
-pub mod rust;
-pub mod save;
-pub mod update_branch;
-
 use clap::Parser;
 use clap::Subcommand;
 
@@ -25,11 +11,25 @@ use crate::cli::pr::PRCommand;
 use crate::cli::pull::PullCommand;
 use crate::cli::push::PushCommand;
 use crate::cli::quick_switch::QuickSwitchCommand;
+use crate::cli::rebase_default::RebaseDefaultCommand;
 use crate::cli::release::ReleaseCommand;
 use crate::cli::rust::RustCommand;
 use crate::cli::save::SaveCommand;
-use crate::cli::update_branch::RebaseDefaultCommand;
 use crate::models::cli_data::CLI_DATA;
+
+pub mod checkpoint;
+pub mod fix_issue;
+pub mod full;
+pub mod init;
+pub mod new_feat;
+pub mod pr;
+pub mod pull;
+pub mod push;
+pub mod quick_switch;
+pub mod rebase_default;
+pub mod release;
+pub mod rust;
+pub mod save;
 
 /// Tools for TagStudio
 #[derive(Parser, Debug, Clone)]

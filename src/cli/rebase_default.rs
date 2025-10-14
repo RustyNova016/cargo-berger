@@ -6,7 +6,10 @@ use crate::models::cli_data::CLI_DATA;
 
 /// Rebase the current branch on the remote's default branch.
 #[derive(Parser, Debug, Clone)]
-pub struct RebaseDefaultCommand;
+pub struct RebaseDefaultCommand {
+    #[clap(short, long)]
+    interactive: bool,
+}
 
 impl RebaseDefaultCommand {
     pub fn run(&self) -> ColEyre {
@@ -17,7 +20,9 @@ impl RebaseDefaultCommand {
 
             repo_data.commit_tmp(Some("Rebasing branch on remote default"))?;
             repo_data.repository.fetch(None, None)?;
-            repo_data.repository.rebase_on_remote_default()?;
+            repo_data
+                .repository
+                .rebase_on_remote_default(self.interactive)?;
         }
 
         Ok(())
