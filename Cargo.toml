@@ -21,7 +21,7 @@ color-eyre = "0.6.5"
 # Others
 toml = "0.9.7"
 git2 = "0.20.2"
-serde = "1.0.226"
+serde = "1.0.228"
 itertools = "0.14.0"
 toml_edit = "0.23.6"
 extend = "1.2.0"
