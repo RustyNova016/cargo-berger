@@ -20,6 +20,14 @@ pub struct FixIssueCommand {
     /// Which repo this issue is from
     #[clap(short, long)]
     repo: Option<String>,
+
+    /// Push the data right after
+    #[clap(long)]
+    push: bool,
+
+    /// Create a PR right after
+    #[clap(short, long)]
+    pr: bool,
 }
 
 impl FixIssueCommand {
@@ -40,10 +48,10 @@ impl FixIssueCommand {
 
         let info = repo.get_issue_info(self.issue_number)?;
         let commit_message = if self.prefix.trim().is_empty() {
-            format!("feat: {}\n\nClose: #{}", info.title, self.issue_number)
+            format!("feat: {}\n\nCloses: #{}", info.title, self.issue_number)
         } else {
             format!(
-                "{}: {}\n\nClose: #{}",
+                "{}: {}\n\nCloses: #{}",
                 self.prefix.trim(),
                 info.title,
                 self.issue_number
@@ -54,6 +62,14 @@ impl FixIssueCommand {
             infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.commit_full(&commit_message)?;
+
+            if self.push {
+                repo_data.repository.push(true, false, false)?;
+            }
+
+            if self.pr {
+                repo_data.create_pull_request()?;
+            }
         }
 
         Ok(())

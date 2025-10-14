@@ -9,6 +9,14 @@ use crate::models::cli_data::CLI_DATA;
 #[derive(Parser, Debug, Clone)]
 pub struct FullCommand {
     message: String,
+
+    /// Push the data right after
+    #[clap(long)]
+    push: bool,
+
+    /// Create a PR right after
+    #[clap(short, long)]
+    pr: bool,
 }
 
 impl FullCommand {
@@ -19,6 +27,14 @@ impl FullCommand {
             infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.commit_full(&self.message)?;
+
+            if self.push {
+                repo_data.repository.push(true, false, false)?;
+            }
+
+            if self.pr {
+                repo_data.create_pull_request()?;
+            }
         }
 
         Ok(())
