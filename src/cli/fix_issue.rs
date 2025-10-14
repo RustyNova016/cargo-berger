@@ -1,9 +1,7 @@
-use std::process::exit;
-
 use clap::Parser;
 
+use crate::utils::user_parsing::UserParser;
 use crate::ColEyre;
-use crate::errorln;
 use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 
@@ -35,16 +33,8 @@ impl FixIssueCommand {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
         //TODO: Smarter repo detection
-        let repo = match self.repo.as_ref() {
-            Some(repo) => berger.get_repository_or_exit(repo),
-            None if berger.repo_data.len() == 1 => berger.repo_data.values().next().unwrap(),
-            None => {
-                errorln!(
-                    "The repository from which the issue originate is ambiguous. Please precise the --repo argument"
-                );
-                exit(1);
-            }
-        };
+        let repo =
+            UserParser::parse_issue_repo(berger.as_ref(), self.issue_number, self.repo.as_deref());
 
         let info = repo.get_issue_info(self.issue_number)?;
         let commit_message = if self.prefix.trim().is_empty() {

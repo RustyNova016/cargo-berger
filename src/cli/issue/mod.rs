@@ -1,4 +1,5 @@
 pub mod checkout;
+pub mod commit;
 
 use clap::Parser;
 use clap::Subcommand;
