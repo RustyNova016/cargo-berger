@@ -106,8 +106,8 @@ pub enum Commands {
     Pr(PRCommand),
     Pull(PullCommand),
     Push(PushCommand),
-    #[clap(aliases = &["quickswitch", "quick_switch"])]
     Release(ReleaseCommand),
+    #[clap(aliases = &["quickswitch", "quick_switch"])]
     QuickSwitch(QuickSwitchCommand),
     #[clap(aliases = &["rebase_default", "refresh_branch", "refresh-branch"])]
     RebaseDefault(RebaseDefaultCommand),
