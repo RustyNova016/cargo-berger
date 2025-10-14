@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use std::process::Command;
 
 use crate::models::commands::gh::GH;
+use crate::models::commands::git::Git;
 use crate::models::commands::git_cliff::GitCliff;
 
 /// Root for a command binding.
@@ -22,6 +23,10 @@ impl Commander {
 
     pub fn gh(self) -> GH {
         GH::new(self)
+    }
+
+    pub fn git(self) -> Git {
+        Git::new(self)
     }
 
     pub fn git_cliff(self) -> GitCliff {

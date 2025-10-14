@@ -7,6 +7,7 @@ use crate::cli::ci::CICommand;
 use crate::cli::fix_issue::FixIssueCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::init::InitCommand;
+use crate::cli::issue::IssueCommand;
 use crate::cli::new_feat::NewFeatCommand;
 use crate::cli::pr::PRCommand;
 use crate::cli::pull::PullCommand;
@@ -23,6 +24,7 @@ pub mod ci;
 pub mod fix_issue;
 pub mod full;
 pub mod init;
+pub mod issue;
 pub mod new_feat;
 pub mod pr;
 pub mod pull;
@@ -101,6 +103,7 @@ pub enum Commands {
     FixIssue(FixIssueCommand),
     Full(FullCommand),
     Init(InitCommand),
+    Issue(IssueCommand),
     #[clap(alias = "new_feat")]
     NewFeat(NewFeatCommand),
     Pr(PRCommand),
@@ -124,6 +127,7 @@ impl Commands {
             Self::FixIssue(val) => val.run()?,
             Self::Full(val) => val.run()?,
             Self::Init(val) => val.run()?,
+            Self::Issue(val) => val.run()?,
             Self::NewFeat(val) => val.run()?,
             Self::Pr(val) => val.run()?,
             Self::Pull(val) => val.run()?,
