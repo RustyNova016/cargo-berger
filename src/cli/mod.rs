@@ -3,6 +3,7 @@ use clap::Subcommand;
 
 use crate::ColEyre;
 use crate::cli::checkpoint::CheckpointCommand;
+use crate::cli::ci::CICommand;
 use crate::cli::fix_issue::FixIssueCommand;
 use crate::cli::full::FullCommand;
 use crate::cli::init::InitCommand;
@@ -18,6 +19,7 @@ use crate::cli::save::SaveCommand;
 use crate::models::cli_data::CLI_DATA;
 
 pub mod checkpoint;
+pub mod ci;
 pub mod fix_issue;
 pub mod full;
 pub mod init;
@@ -93,6 +95,7 @@ impl Cli {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
+    CI(CICommand),
     Checkpoint(CheckpointCommand),
     #[clap(aliases = &["fix_issue", "close-issue", "close_issue"])]
     FixIssue(FixIssueCommand),
@@ -116,6 +119,7 @@ pub enum Commands {
 impl Commands {
     pub fn run(&self) -> crate::ColEyre {
         match self {
+            Self::CI(val) => val.run()?,
             Self::Checkpoint(val) => val.run()?,
             Self::FixIssue(val) => val.run()?,
             Self::Full(val) => val.run()?,
