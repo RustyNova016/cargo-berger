@@ -6,7 +6,7 @@ rust-version = "1.90.0"
 
 [dependencies]
 # Clap
-clap = { version = "4.5.41", features = [
+clap = { version = "4.5.49", features = [
     "unicode",
     "wrap_help",
     "derive",
