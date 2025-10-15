@@ -11,6 +11,7 @@ use crate::models::berger_data::rust_workspace::RustWorkspace;
 use crate::models::config::BergerConfig;
 use crate::models::repository_data::RepositoryData;
 
+pub mod git;
 pub mod rust_workspace;
 
 /// RC Wrapper for [`BergerData`]
