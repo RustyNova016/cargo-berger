@@ -2,12 +2,15 @@ use std::fs::remove_dir_all;
 use std::fs::rename;
 use std::path::PathBuf;
 
+use itertools::Itertools;
+
 use crate::ColEyre;
 use crate::ColEyreVal;
 use crate::models::berger_data::BergerData;
 use crate::models::repository_data::RepositoryData;
 use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
+pub mod patching;
 pub struct RustWorkspace {
     /// The root of the workspace, with the Cargo.toml file
     workspace_root: PathBuf,
@@ -57,7 +60,14 @@ impl RustWorkspace {
         Ok(())
     }
 
-    pub fn turn_off(&self) -> ColEyre {
+    pub fn turn_off(&self, repos: Vec<&RepositoryData>) -> ColEyre {
+        let crate_repos = repos
+            .into_iter()
+            .filter(|repo| repo.rust.is_some())
+            .collect_vec();
+
+        self.install_patches_of_inner(&crate_repos)?;
+
         let cargo_file = self.workspace_root.join("Cargo.toml");
         if cargo_file.exists() {
             rename(cargo_file, self.workspace_root.join("Cargo.disabled.toml"))?;
@@ -76,7 +86,15 @@ impl RustWorkspace {
         Ok(())
     }
 
-    pub fn turn_on(&self, repos: &[&RepositoryData]) -> ColEyre {
+    pub fn turn_on(&self, repos: Vec<&RepositoryData>) -> ColEyre {
+        let crate_repos = repos
+            .into_iter()
+            .filter(|repo| repo.rust.is_some())
+            .collect_vec();
+
+        self.install_patch(&crate_repos)?;
+        self.remove_patches_of_inner(&crate_repos)?;
+
         let target_dir = self.workspace_root.join("target.disabled");
         if target_dir.exists() {
             rename(target_dir, self.workspace_root.join("target"))?;
@@ -94,12 +112,7 @@ impl RustWorkspace {
 
         // Remove the target directories from the inner crates
 
-        for repo in repos {
-            // Only do rust repos
-            if repo.rust.is_none() {
-                continue;
-            }
-
+        for repo in crate_repos {
             let target = repo.root_folder.join("target");
             if target.exists() {
                 remove_dir_all(target)?;

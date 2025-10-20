@@ -28,4 +28,61 @@ impl CargoFile {
         Self::get_patch_crate_io_mut(&mut doc)[dep_name.clone()]["path"] =
             path.to_string_lossy().to_string().into();
     }
+
+    pub fn read_patches(&self) -> Vec<CargoPatch> {
+        let doc = self.doc.lock().unwrap();
+
+        let mut patches = Vec::new();
+        for (crat, patch) in doc["patch"]["crates-io"]
+            .as_table()
+            .unwrap_or(&Default::default())
+        {
+            let Some(data) = patch.as_table() else {
+                continue;
+            };
+
+            patches.push(CargoPatch {
+                name: crat.to_owned(),
+                path: data["path"].as_str().map(|s| s.to_string()),
+                git: data["git"].as_str().map(|s| s.to_string()),
+                branch: data["branch"].as_str().map(|s| s.to_string()),
+                rev: data["rev"].as_str().map(|s| s.to_string()),
+            });
+        }
+
+        patches
+    }
+
+    pub fn add_patch(&self, patch: CargoPatch) {
+        let mut doc = self.doc.lock().unwrap();
+
+        let patched = &mut Self::get_patch_crate_io_mut(&mut doc)[&patch.name];
+        add_optional_element_to_item(patched, "path", patch.path);
+        add_optional_element_to_item(patched, "git", patch.git);
+        add_optional_element_to_item(patched, "branch", patch.branch);
+        add_optional_element_to_item(patched, "rev", patch.rev);
+    }
+
+    pub fn remove_patches(&self) {
+        let mut doc = self.doc.lock().unwrap();
+
+        doc.remove("patch");
+    }
+}
+
+pub struct CargoPatch {
+    pub name: String,
+    pub path: Option<String>,
+    pub git: Option<String>,
+    pub branch: Option<String>,
+    pub rev: Option<String>,
+}
+
+pub fn add_optional_element_to_item<T>(item: &mut Item, key: &str, ele: Option<T>)
+where
+    Item: From<T>,
+{
+    if let Some(ele) = ele {
+        item[key] = ele.into()
+    }
 }

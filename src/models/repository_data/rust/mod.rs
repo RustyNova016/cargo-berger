@@ -6,7 +6,9 @@ use crate::models::config::rust::RustConfig;
 use crate::models::tool_bindings::cargo::Cargo;
 use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
+pub mod patching;
 pub mod release;
+
 /// Handle all the rust configuration and action for the repo
 pub struct RustData {
     cargo_file: CargoFile,

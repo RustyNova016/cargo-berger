@@ -16,9 +16,11 @@ impl CICommand {
     pub fn run(&self) -> crate::ColEyre {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
+        let repos = berger.repo_data.values().collect_vec();
+
         berger
             .get_rust_workspace(false)?
-            .map(|wp| wp.turn_off())
+            .map(|wp| wp.turn_off(repos.clone()))
             .transpose()?;
 
         // We contain the error to first reactivate the workspace before crashing
@@ -26,7 +28,7 @@ impl CICommand {
 
         berger
             .get_rust_workspace(false)?
-            .map(|wp| wp.turn_on(&berger.repo_data.values().collect_vec()))
+            .map(|wp| wp.turn_on(repos.clone()))
             .transpose()?;
 
         res
