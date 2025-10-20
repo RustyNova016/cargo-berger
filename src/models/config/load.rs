@@ -119,12 +119,6 @@ impl BergerConfig {
             return Ok(());
         }
 
-        println!("self: {}", config_path.canonicalize().unwrap().display());
-        println!(
-            "inherited_config_path: {}",
-            inherited_config_path.canonicalize().unwrap().display()
-        );
-
         let Some(inherited_config) = Self::load_if_exists(&inherited_config_path)
             .map_err(Box::new)
             .context(ConfigLoadSnafu {

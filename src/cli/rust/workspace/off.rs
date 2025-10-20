@@ -1,4 +1,5 @@
 use clap::Parser;
+use itertools::Itertools as _;
 
 use crate::models::cli_data::CLI_DATA;
 
@@ -14,8 +15,10 @@ impl RustWorkspaceOffCommand {
     pub fn run(&self) -> crate::ColEyre {
         let berger = CLI_DATA.write().unwrap().get_berger_data()?;
 
+        let repos = berger.repo_data.values().collect_vec();
+
         match berger.get_rust_workspace(true)? {
-            Some(wp) => wp.turn_off()?,
+            Some(wp) => wp.turn_off(repos.clone())?,
             None => println!(
                 "Couldn't turn off the workspace. No suitable `Cargo.toml` file has been found"
             ),
