@@ -1,7 +1,6 @@
 use std::path::Path;
 use std::path::PathBuf;
 
-use color_eyre::eyre::Context;
 use color_eyre::eyre::eyre;
 
 use crate::ColEyreVal;
@@ -35,8 +34,8 @@ pub struct RepositoryData {
 
 impl RepositoryData {
     /// Load an existing repo
-    pub fn load(name: String, conf: RepositoryConfig, wp_root: &Path) -> ColEyreVal<Self> {
-        let path = conf.full_path(wp_root);
+    pub fn load(name: String, conf: RepositoryConfig, berger_root: &Path) -> ColEyreVal<Self> {
+        let path = conf.full_path(berger_root);
 
         if !path.exists() {
             return Err(eyre!("Couldn't find path: {}", path.display()));
@@ -86,29 +85,6 @@ impl RepositoryData {
 
     pub fn get_directory(&self) -> &Path {
         &self.root_folder
-    }
-
-    pub fn open_repo(name: String, conf: RepositoryConfig) -> ColEyreVal<Self> {
-        let path = PathBuf::from(conf.path.clone())
-            .canonicalize()
-            .context(eyre!("Couldn't find folder: `{}`", conf.path.clone()))?;
-
-        let repository = GitRepo::new(path.clone(), conf.default_branch.clone());
-
-        let rust = conf
-            .rust
-            .clone()
-            .map(|conf| RustData::load(&path, conf))
-            .transpose()?;
-
-        Ok(Self {
-            name,
-            root_folder: path,
-            conf,
-            repository,
-
-            rust,
-        })
     }
 
     pub fn new_command(&self) -> Commander {

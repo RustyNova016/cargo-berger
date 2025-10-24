@@ -37,23 +37,23 @@ impl BergerData {
     }
 
     pub fn from_berger_config(
-        workspace_root: PathBuf,
+        berger_root: PathBuf,
         conf: BergerConfig,
     ) -> Result<BergerData, color_eyre::eyre::Error> {
         let mut data = HashMap::new();
 
         for (name, crate_conf) in conf.repositories {
             let repo = if conf.auto_init {
-                RepositoryData::initialize_repo(name.clone(), crate_conf, &workspace_root)?
+                RepositoryData::initialize_repo(name.clone(), crate_conf, &berger_root)?
             } else {
-                RepositoryData::open_repo(name.clone(), crate_conf)?
+                RepositoryData::load(name.clone(), crate_conf, &berger_root)?
             };
 
             data.insert(name.clone(), repo);
         }
 
         Ok(Self {
-            workspace_root,
+            workspace_root: berger_root,
             repo_data: data,
             rust_workspace: OnceCell::new(),
         })
