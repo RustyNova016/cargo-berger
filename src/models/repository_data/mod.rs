@@ -6,6 +6,7 @@ use color_eyre::eyre::eyre;
 use crate::ColEyreVal;
 use crate::models::commands::commander::Commander;
 use crate::models::config::repository_config::RepositoryConfig;
+use crate::models::config::rust2::RustCrateConfig;
 use crate::models::repository_data::rust::RustData;
 use crate::models::tool_bindings::git::GitRepo;
 
@@ -34,7 +35,12 @@ pub struct RepositoryData {
 
 impl RepositoryData {
     /// Load an existing repo
-    pub fn load(name: String, conf: RepositoryConfig, berger_root: &Path) -> ColEyreVal<Self> {
+    pub fn load(
+        name: String,
+        conf: RepositoryConfig,
+        rust_conf: Option<RustCrateConfig>,
+        berger_root: &Path,
+    ) -> ColEyreVal<Self> {
         let path = conf.full_path(berger_root);
 
         if !path.exists() {
@@ -43,9 +49,7 @@ impl RepositoryData {
 
         let repository = GitRepo::new(path.clone(), conf.default_branch.clone());
 
-        let rust = conf
-            .rust
-            .clone()
+        let rust = rust_conf
             .map(|conf| RustData::load(&path, conf))
             .transpose()?;
 
@@ -64,6 +68,7 @@ impl RepositoryData {
     pub fn initialize_repo(
         name: String,
         conf: RepositoryConfig,
+        rust_conf: Option<RustCrateConfig>,
         wp_root: &Path,
     ) -> ColEyreVal<Self> {
         // Check if don't have the repo cloned yet
@@ -80,7 +85,7 @@ impl RepositoryData {
             }
         }
 
-        Self::load(name, conf, wp_root)
+        Self::load(name, conf, rust_conf, wp_root)
     }
 
     pub fn get_directory(&self) -> &Path {

@@ -43,10 +43,12 @@ impl BergerData {
         let mut data = HashMap::new();
 
         for (name, crate_conf) in conf.repositories {
+            let rust_conf = conf.crates.get(&name).cloned();
+
             let repo = if conf.auto_init {
-                RepositoryData::initialize_repo(name.clone(), crate_conf, &berger_root)?
+                RepositoryData::initialize_repo(name.clone(), crate_conf, rust_conf, &berger_root)?
             } else {
-                RepositoryData::load(name.clone(), crate_conf, &berger_root)?
+                RepositoryData::load(name.clone(), crate_conf, rust_conf, &berger_root)?
             };
 
             data.insert(name.clone(), repo);

@@ -6,12 +6,15 @@ remote_url="https://github.com/RustyNova016/cargo-berger"
     [repository.cargo-berger.release]
     git_cliff = true
 
-    [repository.cargo-berger.rust]
+[crate.cargo-berger]
+path="./"
+
+    [crate.cargo-berger.commit]
     fmt = true
     clippy_hack = true
     sqlx = false
 
-    [repository.cargo-berger.rust.ci]
+    [crate.cargo-berger.ci]
     fmt = true
     doc = true
     clippy = true

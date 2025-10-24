@@ -2,12 +2,12 @@ use std::fs::File;
 use std::io;
 use std::io::Read as _;
 use std::path::Path;
+use std::path::PathBuf;
 
-use snafu::OptionExt;
+use itertools::Itertools;
 use snafu::ResultExt;
 
 use crate::models::config::BergerConfig;
-use crate::models::config::repository_config::RepositoryConfig;
 use crate::utils::traits::merge_data::OverwriteMergeData as _;
 
 impl BergerConfig {
@@ -47,33 +47,66 @@ impl BergerConfig {
 
     /// Load all the inherited repos
     pub fn load_inherited(&mut self) -> Result<(), BergerConfigLoadInheritedError> {
-        for (name, repo) in self.repositories.iter_mut() {
-            if !repo.inherit {
-                continue;
-            }
+        let paths = self
+            .get_inherited_repository_paths()
+            .into_iter()
+            .chain(self.get_inherited_crates_paths())
+            .unique()
+            .collect_vec();
 
-            match repo.berger_file_path() {
-                Some(inherited_config_path) => {
-                    Self::load_explicit_config(&self.from_path, repo, name, &inherited_config_path)?
-                }
-                None => Self::load_implicit_config(&self.from_path, repo, name)?,
+        self.load_inherited_configs_path(paths)
+    }
+
+    /// Get the paths for the inherited repositories
+    pub(self) fn get_inherited_repository_paths(&self) -> Vec<ConfigPathType> {
+        self.repositories
+            .values()
+            .filter(|repo| repo.inherit)
+            .filter_map(|repo| match repo.berger_file_path() {
+                Some(inherited_config_path) => Some(ConfigPathType::Explicit(
+                    self.from_path.parent().unwrap().join(inherited_config_path),
+                )),
+                None => Self::get_implicit_config_path(&self.from_path, &repo.path())
+                    .map(ConfigPathType::Implicit),
+            })
+            .collect_vec()
+    }
+
+    /// Get the paths for the inherited rust crates
+    pub(self) fn get_inherited_crates_paths(&self) -> Vec<ConfigPathType> {
+        self.crates
+            .values()
+            .filter(|crat| crat.inherit)
+            .filter_map(|crat| match crat.berger_file_path() {
+                Some(inherited_config_path) => Some(ConfigPathType::Explicit(
+                    self.from_path.parent().unwrap().join(inherited_config_path),
+                )),
+                None => Self::get_implicit_config_path(&self.from_path, &crat.path())
+                    .map(ConfigPathType::Implicit),
+            })
+            .collect_vec()
+    }
+
+    pub(self) fn load_inherited_configs_path(
+        &mut self,
+        configs: Vec<ConfigPathType>,
+    ) -> Result<(), BergerConfigLoadInheritedError> {
+        for path in configs {
+            match path {
+                ConfigPathType::Explicit(path) => self.load_explicit_config(&path)?,
+                ConfigPathType::Implicit(path) => self.load_implicit_config(&path)?,
             }
         }
 
         Ok(())
     }
 
-    /// Load an explicit config
+    /// Load an explicitly linked config
     fn load_explicit_config(
-        config_path: &Path,
-        current_master_repo: &mut RepositoryConfig,
-        name: &str,
+        &mut self,
         inherited_config_path: &Path,
     ) -> Result<(), BergerConfigLoadInheritedError> {
-        // The config contains a relative path to the inherited file. Let's join the dir of self's, and that new path
-        let inherited_config_path = config_path.parent().unwrap().join(inherited_config_path);
-
-        let inherited_config = match Self::load(&inherited_config_path) {
+        let inherited_config = match Self::load(inherited_config_path) {
             Ok(val) => val,
             Err(BergerConfigLoadError::FileNotFound { path: _ }) => {
                 return MissingExplicitInheritSnafu {
@@ -88,75 +121,78 @@ impl BergerConfig {
             }
         };
 
-        Self::merge_repo_config(name, current_master_repo, &inherited_config).context(
-            MergeRepositoryDataSnafu {
-                path: inherited_config_path.display().to_string(),
-            },
-        )?;
+        Self::merge_repo_config(self, &inherited_config).context(MergeRepositoryDataSnafu {
+            path: inherited_config_path.display().to_string(),
+        })?;
 
         Ok(())
     }
 
-    /// Load an implicit config
-    fn load_implicit_config(
-        config_path: &Path,
-        current_master_repo: &mut RepositoryConfig,
-        name: &str,
-    ) -> Result<(), BergerConfigLoadInheritedError> {
-        // No explicite path has been given. Let's join the dir of self's, and the repo's berger file
-        let self_dir = config_path.parent().unwrap();
+    /// Generate an implicite config path for a repo.
+    ///
+    /// The parent config path represent the path of the config we are looking for implicits, and repo_path is the path of the current repo looked at
+    pub fn get_implicit_config_path(
+        parent_config_path: &Path,
+        repo_path: &Path,
+    ) -> Option<PathBuf> {
+        let self_dir = parent_config_path.parent().unwrap();
 
-        let inherited_config_path = self_dir
-            .join(current_master_repo.path())
-            .join("berger.toml");
+        let inherited_config_path = self_dir.join(repo_path).join("berger.toml");
 
         if !inherited_config_path.exists() {
-            return Ok(());
+            return None;
         }
 
         // Check if the inherited file is ourself
-        if config_path.canonicalize().unwrap() == inherited_config_path.canonicalize().unwrap() {
-            return Ok(());
+        if parent_config_path.canonicalize().unwrap()
+            == inherited_config_path.canonicalize().unwrap()
+        {
+            return None;
         }
 
-        let Some(inherited_config) = Self::load_if_exists(&inherited_config_path)
+        Some(inherited_config_path)
+    }
+
+    /// Load an implicit config
+    fn load_implicit_config(
+        &mut self,
+        implicit_config_path: &Path,
+    ) -> Result<(), BergerConfigLoadInheritedError> {
+        let Some(inherited_config) = Self::load_if_exists(implicit_config_path)
             .map_err(Box::new)
             .context(ConfigLoadSnafu {
-                path: inherited_config_path.display().to_string(),
+                path: implicit_config_path.display().to_string(),
             })?
         else {
             return Ok(());
         };
 
-        Self::merge_repo_config(name, current_master_repo, &inherited_config).context(
-            MergeRepositoryDataSnafu {
-                path: inherited_config_path.display().to_string(),
-            },
-        )?;
+        Self::merge_repo_config(self, &inherited_config).context(MergeRepositoryDataSnafu {
+            path: implicit_config_path.display().to_string(),
+        })?;
 
         Ok(())
     }
 
+    /// Merge two berger files together, with the parent one overwriting the inherited
     pub fn merge_repo_config(
-        name: &str,
-        current_master_repo: &mut RepositoryConfig,
+        parent_berger_conf: &mut BergerConfig,
         inherited_config: &BergerConfig,
     ) -> Result<(), MissingRepoInInheritedError> {
-        let inherited_repo_config =
-            inherited_config
-                .repositories
-                .get(name)
-                .context(MissingRepoInInheritedSnafu {
-                    name: name.to_string(),
-                })?;
-
-        let new_repo_config = inherited_repo_config
+        let new_repo_config = inherited_config
             .to_owned()
-            .merge_data(current_master_repo.to_owned());
-        *current_master_repo = new_repo_config;
+            .merge_data(parent_berger_conf.to_owned());
+
+        *parent_berger_conf = new_repo_config;
 
         Ok(())
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+enum ConfigPathType {
+    Explicit(PathBuf),
+    Implicit(PathBuf),
 }
 
 #[derive(Debug, snafu::Snafu)]

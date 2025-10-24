@@ -5,7 +5,6 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::models::config::release::ReleaseConfig;
-use crate::models::config::rust::RustConfig;
 use crate::utils::traits::merge_data::OverwriteMergeData;
 
 /// Configuration for a repository in the herd
@@ -27,9 +26,6 @@ pub struct RepositoryConfig {
 
     // Release settings
     pub release: Option<ReleaseConfig>,
-
-    // Languages
-    pub rust: Option<RustConfig>,
 }
 
 impl RepositoryConfig {
@@ -42,7 +38,6 @@ impl RepositoryConfig {
             default_branch: default_branch(),
             default_remote: default_remote(),
             release: Default::default(),
-            rust: None,
         }
     }
 
@@ -71,7 +66,6 @@ impl OverwriteMergeData for RepositoryConfig {
         self.default_branch.merge_data_mut(other.default_branch);
 
         self.release.merge_data_mut(other.release);
-        self.rust.merge_data_mut(other.rust);
     }
 }
 
