@@ -28,7 +28,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Install cargo-berger for full suite testing
-        run: cargo install --git https://github.com/RustyNova016/cargo-berger --branch ci_integration
+        run: cargo install --git https://github.com/RustyNova016/cargo-berger --branch split_rust_conf
 
       - name: Install cargo-hack
         run: cargo +stable install cargo-hack --locked
@@ -46,4 +46,4 @@ jobs:
       #   run: cargo +stable install cargo-minimal-versions --locked
 
       - name: Run berger ci
-        run: cargo-berger rust ci
+        run: cargo-berger ci

@@ -2,7 +2,7 @@ use std::path::Path;
 
 use crate::ColEyre;
 use crate::ColEyreVal;
-use crate::models::config::rust::RustConfig;
+use crate::models::config::rust2::RustCrateConfig;
 use crate::models::tool_bindings::cargo::Cargo;
 use crate::models::tool_bindings::cargo::cargo_file::CargoFile;
 
@@ -12,13 +12,13 @@ pub mod release;
 /// Handle all the rust configuration and action for the repo
 pub struct RustData {
     cargo_file: CargoFile,
-    rust_conf: RustConfig,
+    rust_conf: RustCrateConfig,
 
     cargo: Cargo,
 }
 
 impl RustData {
-    pub fn load(directory: &Path, rust_conf: RustConfig) -> ColEyreVal<Self> {
+    pub fn load(directory: &Path, rust_conf: RustCrateConfig) -> ColEyreVal<Self> {
         Ok(Self {
             cargo_file: CargoFile::load(directory.join("Cargo.toml"))?,
             rust_conf,
@@ -27,17 +27,17 @@ impl RustData {
     }
 
     pub fn pre_full_commit(&self) -> ColEyre {
-        if self.rust_conf.fmt {
+        if self.rust_conf.commit.fmt {
             println!("\n === Running Formater ===\n");
             self.cargo.fmt()?;
         }
 
-        if self.rust_conf.sqlx {
+        if self.rust_conf.commit.sqlx {
             println!("\n === Running sqlx prepare ===\n");
             self.cargo.sqlx_prepare()?;
         }
 
-        if self.rust_conf.clippy_hack {
+        if self.rust_conf.commit.clippy_hack {
             println!("\n === Running Clippy Hack ===\n");
             self.cargo.clippy_hack()?;
         }
