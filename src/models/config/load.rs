@@ -76,7 +76,7 @@ impl BergerConfig {
     pub(self) fn get_inherited_crates_paths(&self) -> Vec<ConfigPathType> {
         self.crates
             .values()
-            .filter(|crat| crat.inherit)
+            .filter(|crat| crat.inherit())
             .filter_map(|crat| match crat.berger_file_path() {
                 Some(inherited_config_path) => Some(ConfigPathType::Explicit(
                     self.from_path.parent().unwrap().join(inherited_config_path),
