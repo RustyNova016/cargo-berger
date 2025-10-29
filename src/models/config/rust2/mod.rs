@@ -15,8 +15,7 @@ pub mod commit;
 pub struct RustCrateConfig {
     pub path: String,
 
-    #[serde(default = "default_inherit")]
-    pub inherit: bool,
+    pub inherit: Option<bool>,
     berger_file_path: Option<String>,
 
     #[serde(default)]
@@ -34,10 +33,10 @@ impl RustCrateConfig {
     pub fn berger_file_path(&self) -> Option<PathBuf> {
         self.berger_file_path.as_ref().map(PathBuf::from)
     }
-}
 
-fn default_inherit() -> bool {
-    true
+    pub fn inherit(&self) -> bool {
+        self.inherit.unwrap_or(true)
+    }
 }
 
 impl OverwriteMergeData for RustCrateConfig {

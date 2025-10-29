@@ -27,17 +27,17 @@ impl RustData {
     }
 
     pub fn pre_full_commit(&self) -> ColEyre {
-        if self.rust_conf.commit.fmt {
+        if self.rust_conf.commit.fmt() {
             println!("\n === Running Formater ===\n");
             self.cargo.fmt()?;
         }
 
-        if self.rust_conf.commit.sqlx {
+        if self.rust_conf.commit.sqlx() {
             println!("\n === Running sqlx prepare ===\n");
             self.cargo.sqlx_prepare()?;
         }
 
-        if self.rust_conf.commit.clippy_hack {
+        if self.rust_conf.commit.clippy_hack() {
             println!("\n === Running Clippy Hack ===\n");
             self.cargo.clippy_hack()?;
         }
