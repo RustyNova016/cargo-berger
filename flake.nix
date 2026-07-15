@@ -30,6 +30,15 @@
           src = pkgs.lib.cleanSource ./.;
           cargoLock.lockFile = ./Cargo.lock;
 
+          buildInputs = [
+            pkgs.openssl
+            pkgs.gh
+          ];
+
+          nativeBuildInputs = [
+            pkgs.pkg-config
+          ];
+
           # For other makeRustPlatform features see:
           # https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md#cargo-features-cargo-features
         };
@@ -40,6 +49,7 @@
             buildInputs = [
               openssl # In case native SSL is used
               pkg-config
+              pkgs.gh
 
               # CI / Linting tools
               cargo-mutants
