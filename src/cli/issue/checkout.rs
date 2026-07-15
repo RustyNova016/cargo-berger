@@ -4,7 +4,7 @@ use crate::infoln;
 use crate::models::cli_data::CLI_DATA;
 use crate::utils::user_parsing::UserParser;
 
-/// Initialise the folder using the data from the berger file. This needs to be rerun every major changes in the `berger.toml` file
+/// Move to a branch for this issue
 #[derive(Parser, Debug, Clone)]
 pub struct IssueCheckoutCommand {
     /// The issue number that this commit fixes
@@ -28,7 +28,7 @@ impl IssueCheckoutCommand {
 
             repo_data.new_feat_branch(
                 &branch_name,
-                Some(&format!("Switch to issue branch `{}`", &branch_name)),
+                Some(&format!("Switch to issue branch `{branch_name}`")),
             )?;
         }
 
