@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url = "github:numtide/flake-utils";
+    cargo-berger.url = "github:RustyNova016/cargo-berger/f622a8db0a1093547a95a2d041c7649bfef9b367";
   };
 
   outputs =
@@ -12,12 +13,14 @@
       nixpkgs,
       rust-overlay,
       flake-utils,
+      cargo-berger,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         overlays = [ (import rust-overlay) ];
+
         pkgs = import nixpkgs {
           inherit system overlays;
         };
@@ -33,6 +36,8 @@
           buildInputs = [
             pkgs.openssl
             pkgs.gh
+            pkgs.cargo-msrv
+            pkgs.cargo-machete
           ];
 
           nativeBuildInputs = [
@@ -47,7 +52,7 @@
           with pkgs;
           mkShell {
             buildInputs = [
-              openssl # In case native SSL is used
+              openssl
               pkg-config
               pkgs.gh
 
@@ -57,6 +62,7 @@
               cargo-msrv
               cargo-audit
               cargo-machete
+              cargo-berger.packages."${pkgs.stdenv.hostPlatform.system}".default
 
               (rust-bin.stable.latest.default.override {
                 extensions = [
