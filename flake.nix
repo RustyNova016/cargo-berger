@@ -38,6 +38,7 @@
             pkgs.gh
             pkgs.cargo-msrv
             pkgs.cargo-machete
+            pkgs.cargo-nextest
           ];
 
           nativeBuildInputs = [
@@ -63,6 +64,7 @@
               cargo-audit
               cargo-machete
               cargo-berger.packages."${pkgs.stdenv.hostPlatform.system}".default
+              
 
               (rust-bin.stable.latest.default.override {
                 extensions = [

@@ -22,7 +22,7 @@ impl NewFeatCommand {
                 &self.branch,
                 self.message.as_deref().or(Some(&format!(
                     "Switch to new feature branch `{}`",
-                    &self.branch
+                    self.branch
                 ))),
             )?;
         }
