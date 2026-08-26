@@ -1,6 +1,6 @@
-# cargo-berger
+# Berger
 
-Cargo Berger is a cli app to organise multiple rust crates with different directories. This allow to orchestrate all git repositories as they were only one, without the cons of monorepos. 
+Berger is a cli app to organise multiple rust crates with different directories. This allow to orchestrate all git repositories as they were only one, without the cons of monorepos. 
 
 While it is made for rust, multiple commands can be used on any git repository.
 
