@@ -1,7 +1,9 @@
+pub mod amend;
 use clap::Parser;
 use clap::Subcommand;
 
 use crate::ColEyre;
+use crate::cli::amend::AmendCommand;
 use crate::cli::checkpoint::CheckpointCommand;
 use crate::cli::ci::CICommand;
 use crate::cli::debug::DebugCommand;
@@ -99,6 +101,7 @@ impl Cli {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
+    Amend(AmendCommand),
     CI(CICommand),
     Checkpoint(CheckpointCommand),
     Debug(DebugCommand),
@@ -125,6 +128,7 @@ pub enum Commands {
 impl Commands {
     pub fn run(&self) -> crate::ColEyre {
         match self {
+            Self::Amend(val) => val.run()?,
             Self::CI(val) => val.run()?,
             Self::Checkpoint(val) => val.run()?,
             Self::Debug(val) => val.run()?,

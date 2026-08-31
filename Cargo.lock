@@ -98,6 +98,7 @@ dependencies = [
  "clap",
  "clap-markdown",
  "color-eyre",
+ "command-run",
  "convert_case",
  "extend",
  "git2",
@@ -218,6 +219,15 @@ name = "colorchoice"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b05b61dc5112cbb17e4b6cd61790d9845d13888356391624cbe7e41efeac1e75"
+
+[[package]]
+name = "command-run"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e56cae11ef6f8c0715f3224128fcae2f74c4b5bce116a095e315b5a488550f9"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "convert_case"
