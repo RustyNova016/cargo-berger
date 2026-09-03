@@ -9,6 +9,10 @@ use crate::models::cli_data::CLI_DATA;
 pub struct AmendCommand {
     /// Rewrite the commit message to this
     message: Option<String>,
+
+    /// Push the changes using --force-with-lease
+    #[clap(short, long)]
+    push: bool,
 }
 
 impl AmendCommand {
@@ -22,7 +26,9 @@ impl AmendCommand {
 
             repo_data
                 .repository
-                .commit_ammend(self.message.as_ref().map(|x| x.as_str()))?;
+                .commit_ammend(self.message.as_deref())?;
+
+            repo_data.repository.push(true, true, false)?;
         }
 
         infoln!();
