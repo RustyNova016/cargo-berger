@@ -4,6 +4,7 @@ use std::process::Command;
 
 use color_eyre::eyre::Context;
 use color_eyre::eyre::eyre;
+use command_run::Command as CommandR;
 use git2::Status;
 
 use crate::ColEyre;
@@ -18,6 +19,13 @@ impl GitRepo {
     pub fn get_base_command(&self) -> Command {
         let mut cmd = Command::new("git");
         cmd.current_dir(&self.path);
+        cmd
+    }
+
+    pub fn get_base_command_new(&self) -> CommandR {
+        let mut cmd = CommandR::new("git");
+        cmd.set_dir(&self.path);
+        cmd.enable_capture();
         cmd
     }
 
@@ -54,14 +62,17 @@ impl GitRepo {
         Ok(())
     }
 
-    pub fn commit_ammend(&self, message: &str) -> ColEyre {
-        let mut cmd = self.get_base_command();
+    pub fn commit_ammend(&self, message: Option<&str>) -> ColEyre {
+        let mut cmd = self.get_base_command_new();
         //format!("tmp: {}", message.unwrap_or("(No message)"))
-        cmd.arg("commit").arg("-m").arg(message).arg("--amend");
+        cmd.add_arg("commit").add_arg("--amend");
 
-        let output = cmd.output().unwrap();
-        io::stdout().write_all(&output.stdout).unwrap();
-        io::stderr().write_all(&output.stderr).unwrap();
+        match message {
+            Some(msg) => cmd.add_arg("-m").add_arg(msg),
+            None => cmd.add_arg("--no-edit"),
+        };
+
+        let _output = cmd.run()?;
 
         Ok(())
     }
