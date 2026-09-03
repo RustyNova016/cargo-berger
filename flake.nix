@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url = "github:numtide/flake-utils";
-    berger.url = "github:RustyNova016/cargo-berger/f622a8db0a1093547a95a2d041c7649bfef9b367";
+    berger.url = "github:RustyNova016/cargo-berger/863b9d007750b6ab9f70e4fdbe2d98ed59d8dc79";
   };
 
   outputs =

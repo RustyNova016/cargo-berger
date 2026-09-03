@@ -48,5 +48,10 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      - name: Setup Nix env
+        shell: 'nix develop -c bash -e {0}'
+        run: echo "done"
+
       - name: Run berger ci
-        run: nix develop --command cargo-berger ci
+        shell: 'nix develop -c bash -e {0}'
+        run: berger ci

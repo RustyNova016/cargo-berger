@@ -1,8 +1,11 @@
+use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::process::Command;
 
+use command_run::Command as CommandR;
+
 use crate::models::commands::gh::GH;
-use crate::models::commands::git::Git;
+use crate::models::commands::git::GitCLI;
 use crate::models::commands::git_cliff::GitCliff;
 
 /// Root for a command binding.
@@ -21,12 +24,16 @@ impl Commander {
         cmd
     }
 
+    pub fn build_command<S: AsRef<OsStr>>(&self, program: S) -> CommandR {
+        CommandR::new(program)
+    }
+
     pub fn gh(self) -> GH {
         GH::new(self)
     }
 
-    pub fn git(self) -> Git {
-        Git::new(self)
+    pub fn git(self) -> GitCLI {
+        GitCLI::new(self)
     }
 
     pub fn git_cliff(self) -> GitCliff {

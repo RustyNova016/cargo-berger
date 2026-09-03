@@ -23,12 +23,19 @@ impl AmendCommand {
             infoln!("Processing repository `{}`", repo_data.name);
 
             repo_data.repository.add_all_files();
-
             repo_data
                 .repository
                 .commit_ammend(self.message.as_deref())?;
 
-            repo_data.repository.push(true, true, false)?;
+            let current_branch = repo_data.repository.get_current_branch()?;
+
+            repo_data
+                .repository
+                .cli()
+                .push()
+                .force_with_lease(true)
+                .set_upstream(("origin", &current_branch))
+                .call()?;
         }
 
         infoln!();
