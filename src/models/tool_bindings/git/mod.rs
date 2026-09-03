@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use git2::Repository;
 
 use crate::models::commands::commander::Commander;
+use crate::models::commands::git::GitCLI;
 
 pub mod basic_git;
 pub mod branch;
@@ -27,5 +28,9 @@ impl GitRepo {
 
     pub fn new_command(&self) -> Commander {
         Commander::new(self.path.to_owned())
+    }
+
+    pub fn cli(&self) -> GitCLI {
+        GitCLI::new(Commander::new(self.path.to_owned()))
     }
 }

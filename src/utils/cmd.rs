@@ -38,3 +38,15 @@ pub fn unwrap_status_out(out: Output) -> ColEyreVal<String> {
 
     Ok(String::from_utf8_lossy(&out.stdout).to_string())
 }
+
+pub fn error_on_non_zero(out: command_run::Output) -> ColEyre {
+    if !out.status.success() {
+        return Err(eyre!(
+            "Couldn't run command:\n{}\n\n{}",
+            out.stdout_string_lossy(),
+            out.stderr_string_lossy()
+        ));
+    }
+
+    Ok(())
+}
